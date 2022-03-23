@@ -149,12 +149,12 @@
                             </div>
                         </form>
                     </div>
-
-                    {% if request.session %}
+                   
+                    {% if request.session.email %}
                     <div class="header__account header__sticky--none">
                         <ul class="d-flex">
                             <li class="header__account--items">
-                                <a class="header__account--btn" href="my-account.html">
+                                <a class="header__account--btn" href="{% url 'MyAccountView' %}">
                                     <svg xmlns="http://www.w3.org/2000/svg"  width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg> 
                                     <span class="header__account--btn__text">My Account</span>
                                 </a>
@@ -305,7 +305,7 @@
                         </nav>
                     </div>
                    
-                    {% if request.session %}
+                    {% if request.session.email %}
                     <div class="header__account header__account2 header__sticky--block">
                         <ul class="d-flex">
                             <li class="header__account--items header__account2--items  header__account--search__items d-none d-lg-block">
@@ -374,16 +374,13 @@
                         <nav class="header__menu--navigation">
                             <ul class="d-flex">
                                 <li class="header__menu--items">
-                                    <a class="header__menu--link text-white" href="index.html">Home 
-                                        <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7.41" viewBox="0 0 12 7.41">
-                                            <path  d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7"/>
-                                        </svg>
+                                    <a class="header__menu--link text-white" href="{% url 'HomeView' %}">Home 
                                     </a>
-                                    <ul class="header__sub--menu">
+                                    <!-- <ul class="header__sub--menu">
                                         <li class="header__sub--menu__items"><a href="index.html" class="header__sub--menu__link">Home One</a></li>
                                         <li class="header__sub--menu__items"><a href="index-2.html" class="header__sub--menu__link">Home Two</a></li>
                                         <li class="header__sub--menu__items"><a href="index-3.html" class="header__sub--menu__link">Home Three</a></li>
-                                    </ul>
+                                    </ul> -->
                                 </li>
                                 <li class="header__menu--items mega__menu--items">
                                     <a class="header__menu--link text-white" href="shop.html">Shop 

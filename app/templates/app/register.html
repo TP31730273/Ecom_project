@@ -1,4 +1,6 @@
-{% extends 'app/base.html' %} {% load static %} {% block content %}
+{% extends 'app/base.html' %} 
+{% load static %} 
+{% block content %}
 
 <main class="main__content_wrapper">
   <!-- Start breadcrumb section -->
@@ -16,9 +18,7 @@
               </li>
               <li class="breadcrumb__content--menu__items">
                 <span class="text-white">Account Page</span>
-                {% for m in messages %}
-                {{m}}
-                {% endfor %}
+
               </li>
             </ul>
           </div>
@@ -42,7 +42,11 @@
                     Create an Account
                   </h2>
                   <p class="account__login--header__desc">
-                    Register here if you are a new customer
+                    Click here if you are a Seller:
+                    <div style="position: absolute; margin-left: 210px; margin-top: -31px;">
+                        <input class="checkout__checkbox--input" id="check1" type="checkbox" name="check1">
+                        <span class="checkout__checkbox--checkmark"></span>
+                    </div>
                   </p>
                 </div>
                 <div class="account__login--inner">

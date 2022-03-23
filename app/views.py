@@ -12,17 +12,20 @@ from django.contrib import messages
 class HomeView(View):
      def get(self,request):
           return render(request,'app/index.html')
+class MyAccountView(View):
+     def get(self,request):
+          return render(request,'app/my-account.html')
 class RegisterForm(View):
      def get(self,request):
           if 'email' in request.session:
-               print("**********************************************************")
+              
                return redirect('HomeView')
           else:
                return render(request,'app/register.html')
 class LoginForm(View):
      def get(self,request):
           if 'email' in request.session:
-               print("**********************************************************")
+
                return redirect('HomeView')
           else:
                return render(request,'app/login.html')
@@ -32,10 +35,11 @@ class RegisterView(View):
           user_name = request.POST.get('username')
           email = request.POST.get('email')
           password = request.POST.get('pswd')
+          boo = request.POST.get('check1')
           
-          # print(type(user_name),"*********")
+          print(type(boo),"*********")
           get_user=Customers.objects.filter(email=email).exists()
-          if not get_user:
+          if not get_user and (boo != 'on'):
                if request.method == "POST":
                     user_create=Customers.objects.create(email=email,username=user_name,password=make_password(password))
                     user_create.save()
@@ -45,23 +49,29 @@ class RegisterView(View):
                return redirect('RegisterForm')
 
 class LoginView(View):
-     def get(self,request):
-          return render(request,'app/login.html')
-        
+   
      def post(self, request):
 
           if request.method == "POST":
                email = request.POST.get('email')
                password = request.POST.get('pswd') 
                get_user=Customers.objects.filter(email=email).exists()
-               print("******************",get_user)
+              
                if get_user:
-                    print("***********")
+                  
                     user=Customers.objects.get(email=email)
                     if check_password(password,user.password):
                          request.session['email']=email
-                         print("sucesssssssssssssssssssssss")
                          return redirect('HomeView')
                     else:
                          return redirect('LoginForm')
+
+
+class Logout(View):
+     def get(self, request):
+          if 'email' in request.session:
+               del request.session['email']
+               print("********121234234234234243423423423424234234******")
+               return redirect('HomeView')
+
        
