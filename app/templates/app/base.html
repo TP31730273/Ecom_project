@@ -22,7 +22,7 @@
 </head>
 
 <body>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <!-- Start preloader -->
     <!-- <div id="preloader">
         <div id="ctn-preloader" class="ctn-preloader">
@@ -149,6 +149,8 @@
                             </div>
                         </form>
                     </div>
+
+                    {% if request.session %}
                     <div class="header__account header__sticky--none">
                         <ul class="d-flex">
                             <li class="header__account--items">
@@ -181,6 +183,22 @@
                             </li>
                         </ul>
                     </div>
+                    {% else %}
+                    <div class="header__account header__sticky--none">
+                        <ul class="d-flex">
+                            <li class="header__account--items">
+                                <a class="header__account--btn" href="/login">
+                                    <span class="header__account--btn__text">Login</span>
+                                </a>
+                            </li>
+                            <li class="header__account--items d-none d-lg-block">
+                                <a class="header__account--btn" href="/register">
+                                    <span class="header__account--btn__text">Register</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
                     <div class="header__menu d-none header__sticky--block d-lg-block">
                         <nav class="header__menu--navigation">
                             <ul class="d-flex">
@@ -286,6 +304,8 @@
                             </ul>
                         </nav>
                     </div>
+                   
+                    {% if request.session %}
                     <div class="header__account header__account2 header__sticky--block">
                         <ul class="d-flex">
                             <li class="header__account--items header__account2--items  header__account--search__items d-none d-lg-block">
@@ -322,6 +342,28 @@
                             </li>
                         </ul>
                     </div>
+                    {% else %}
+                    <div class="header__account header__account2 header__sticky--block">
+                        <ul class="d-flex">
+                            <li class="header__account--items header__account2--items  header__account--search__items d-none d-lg-block">
+                                <a class="header__account--btn search__open--btn" href="javascript:void(0)" data-offcanvas>
+                                    <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  
+                                    <span class="visually-hidden">Search</span>
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn" href="{% url 'LoginForm' %}">
+                                    <span >Login</span>
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items d-none d-lg-block">
+                                <a class="header__account--btn" href="{% url 'RegisterForm' %}">
+                                    <span>Register</span> 
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -884,12 +926,13 @@
 </footer>
 <!-- End footer section -->
     <!-- Scroll top bar -->
+
     <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
 
   <!-- All Script JS Plugins here  -->
   <!-- <script src="{% static 'js/vendor/popper.js' %}" defer="defer"></script> -->
   <!-- <script src="{% static 'js/vendor/bootstrap.min.js' %}" defer="defer"></script> -->
-  
+ 
   <script src="{% static 'js/plugins/swiper-bundle.min.js' %}"></script>
   <script src="{% static 'js/plugins/glightbox.min.js' %}"></script>
 
