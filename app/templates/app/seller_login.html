@@ -25,14 +25,14 @@
         <!-- Start login section  -->
         <div class="login__section section--padding">
             <div class="container">
-                <form action="{% url 'LoginView' %}" method="post">
+                <form action="{% url 'SellerLoginView' %}" method="post">
                     {% csrf_token %}
                     <div class="login__section--inner">
                         <div class="row row-cols-md-2 row-cols-1">
                             <div class="col">
                                 <div class="account__login">
                                     <div class="account__login--header mb-25">
-                                        <h2 class="account__login--header__title h3 mb-10">Customer Login</h2>
+                                        <h2 class="account__login--header__title h3 mb-10">Seller Login</h2>
                                     </div>
                                     <div class="account__login--inner">
                                         <input class="account__login--input" placeholder="Email Addres" type="text" required name="email">
