@@ -45,5 +45,6 @@ class ProductAdmin(admin.ModelAdmin):
         'product_image',
         'product_category',
         'seller',
+        'soft_product',
     )
-    list_filter = ('product_category', 'seller')
+    list_filter = ('product_category', 'seller', 'soft_product')

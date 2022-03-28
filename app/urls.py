@@ -1,3 +1,4 @@
+from re import template
 from django.urls import path
 from app.views import *
 from django.conf import settings
@@ -17,4 +18,9 @@ urlpatterns = [
     path('MyAccount/', MyAccountView.as_view(),name='MyAccountView'),
     path('SellerAccount/', MySellerAccountView.as_view(),name='MySellerAccountView'),
     path('Product-list/', ProductListPage.as_view(),name='ProductListPage'),
+    path('add-category/', TemplateView.as_view(template_name='app/add-category.html'),name='AddCategoryView '),
+    path('Add-category/', AddCategoryView.as_view(),name='AddCategoryView'),
+    path('Product-page/<int:product>/', ProductView.as_view(),name='product_page'),
+    path('delete-product/<int:product>/', RemoveProductPage.as_view(),name='RemoveProductPage'),
+    path('filtered-data/', FilterFunction.as_view(),name='FilterFunction'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

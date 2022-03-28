@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import redirect
 from .models import *
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -27,17 +29,45 @@ class MySellerAccountView(View):
 
 class ProductListPage(View):
      def get(self,request):
-          products = Product.objects.all().order_by('id')
-          # paginator = Paginator(product, 5)
-          # page_number = request.GET.get('page')
-          # page_object = paginator.get_page(page_number)
-          return render(request,'app/product-list.html',{"products":products})
+          products = Product.objects.filter(soft_product=False).order_by('id')
+          paginator = Paginator(products, 1)
+          page_number = request.GET.get('page')
+          page_object = paginator.get_page(page_number)
+          categories=Category.objects.all()
+          return render(request,'app/product-list.html',{"page_object":page_object,"categories":categories})
      def post(self,request):
           pass
 
+# class ProductView(View):
+#     def get(self, request, product):
+#         if 'email' in request.session:
+#           product_detail = Product.objects.get(pk=product)
+#           return render(request,'app/product-details.html',{"product_page":product_detail})
+#         else:
+#              return render(request,'app/404.html')
+
+class ProductView(DetailView):
+    model = Product
+    template_name = 'app/product-details.html'
+    context_object_name = 'product_page'
+    pk_url_kwarg = 'product'
+
 class AddProductPage(View):
      def get(self,request):
-          return render(request,'app/add-product.html')
+          try:
+               all_category=Category.objects.all()
+               return render(request,'app/add-product.html',{"all_category":all_category})
+          except:
+               return render(request,'app/add-product.html')
+
+class RemoveProductPage(View):
+     def get(self,request,product):
+          get_product=Product.objects.filter(id=product).exists()
+          if get_product:
+               softdlt=Product.objects.get(id=product)
+               softdlt.soft_product=True
+               softdlt.save()
+               return redirect('ProductListPage')
 
 class RegisterForm(View):
      def get(self,request):
@@ -108,6 +138,7 @@ class LoginView(View):
                          return redirect('HomeView')
                     else:
                          return redirect('LoginForm')
+
 class SellerLoginView(View):
    
      def post(self, request):
@@ -132,14 +163,14 @@ class AddProductView(View):
                product_name = request.POST.get('product_name')
                product_description = request.POST.get('product_description')
                product_price = request.POST.get('product_price')
-               # product_category = request.POST.get('product_category')
+               product_category = request.POST.get('product_category')
                product_image = request.FILES['product_image']
                exist_product=Product.objects.filter(product_name=product_name).exists()
                live_seller=Sellers.objects.get(email=request.session['email'])
-
+               cat=Category.objects.get(category_name=product_category)
 
                if not exist_product:
-                    create_product=Product.objects.create(product_name=product_name,product_description=product_description,product_price=product_price,product_image=product_image,seller=live_seller)
+                    create_product=Product.objects.create(product_name=product_name,product_description=product_description,product_price=product_price,product_image=product_image,seller=live_seller,product_category=cat)
                     create_product.save()
                     return redirect('ProductListPage')
                else:
@@ -148,12 +179,28 @@ class AddProductView(View):
                     }
                     return JsonResponse(response)
 
+class AddCategoryView(View):
+    
+    def post(self, request):
+        category = request.POST['product_category']
+        category_object = Category.objects.filter(category_name=category)
+
+        if not category_object.exists():
+            cd = Category(category_name=category)
+            cd.save()
+        
+        return render(request,'app/add-category.html')
+
+class FilterFunction(View):
+     def post(self, request):          
+          
+          return redirect('ProductListPage')
 
 class Logout(View):
      def get(self, request):
           if 'email' in request.session:
                del request.session['email']
-               print("********121234234234234243423423423424234234******")
+               
                return redirect('HomeView')
 
        

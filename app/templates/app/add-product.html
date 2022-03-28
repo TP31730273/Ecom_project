@@ -25,14 +25,7 @@
         <section class="my__account--section section--padding">
             <div class="container">
                 <div class="my__account--section__inner border-radius-10 d-flex">
-                    <div class="account__left--sidebar">
-                        <h2 class="account__content--title h3 mb-20">My Profile</h2>
-                        <ul class="account__menu">
-                            <li class="account__menu--list"><a href="/Product-list">Product-List</a></li>
-                            <li class="account__menu--list"><a href="{% url 'AddProductPage' %}">Add product</a></li>
-                            <li class="account__menu--list"><a href="{% url 'Logout' %}">Log Out</a></li>
-                        </ul>
-                    </div>
+                    {% include 'app/selller-part.html' %}
                     <div class="account__wrapper">
                         <form action="{% url 'AddProductView' %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
@@ -44,14 +37,13 @@
                                     <textarea class="account__login--input" placeholder="Product-description"  required name="product_description"></textarea>
                                     <input class="account__login--input" placeholder="Product-price" type="number" required name="product_price">
                                     <div id="product_image"  style="margin-bottom: 30px;">
-                                        <input class="account__login--input" placeholder="Product-Category" type="text" required name="product_category">
                                         
-                                        <!-- <select name="plan" id="plan">
-                                            <option value="free">Free</option>
-                                            <option value="starter" selected>Starter </option>
-                                            <option value="professional">Professional</option>
-                                            <option value="corporate">Corporate</option>
-                                        </select> -->
+                                        <label for="product_category">Product-Category:</label>
+                                        <select name="product_category" id="product_category">
+                                            {% for category in all_category%}
+                                            <option value="{{category.category_name}}">{{category.category_name}}</option>
+                                            {% endfor %}
+                                          </select>
                                     </div>
                                     <div id="product_image"  style="margin-bottom: 30px;">
                                         <label for="product_image">Product-Image:</label>
