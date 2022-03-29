@@ -27,7 +27,11 @@
     </div>
   </section>
   <!-- End breadcrumb section -->
-
+<div style="position: absolute; color: red; margin-top: 55px; margin-left: 418px;">
+  {% for message in messages %}
+    {{message}}
+    {% endfor %}
+</div>
   <!-- Start login section  -->
   <div class="login__section section--padding">
     <div class="container">
@@ -63,12 +67,12 @@
                   <input
                     class="account__login--input"
                     placeholder="Password"
-                    type="password" name="pswd" id="pswd" required
+                    type="password" name="password" id="password" required
                   />
                   <input
                     class="account__login--input"
                     placeholder="Confirm Password"
-                    type="password" name="cpswd" id="cpswd" required
+                    type="password" name="conform_password" id="conform_password" required
                   />
                   <button
                     class="account__login--btn primary__btn mb-10"

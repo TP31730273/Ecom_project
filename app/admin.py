@@ -24,7 +24,7 @@ class SellersAdmin(admin.ModelAdmin):
         'email',
         'username',
         'password',
-        'Shop_name',
+        'shop_name',
         'image',
     )
     list_filter = ('last_login',)
@@ -45,6 +45,14 @@ class ProductAdmin(admin.ModelAdmin):
         'product_image',
         'product_category',
         'seller',
-        'soft_product',
+        'is_active',
+        'date_modified',
+        'date_created',
     )
-    list_filter = ('product_category', 'seller', 'soft_product')
+    list_filter = (
+        'product_category',
+        'seller',
+        'is_active',
+        'date_modified',
+        'date_created',
+    )

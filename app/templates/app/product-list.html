@@ -1,7 +1,25 @@
 {% extends 'app/base.html' %}
 {% load static %}
 {% block content %}
+<style>
+    .pop-outer {
+                background-color: rgba(0, 0, 0, 0.5);
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .pop-inner {
+                background-color: #fff;
+                width: 500px;
+                height: 300px;
+                padding: 25px;
+                margin: 5% auto;
+            }
 
+           
+</style>
     <main class="main__content_wrapper">
         
         <!-- Start breadcrumb section -->
@@ -12,7 +30,7 @@
                         <div class="breadcrumb__content text-center">
                             <h1 class="breadcrumb__content--title text-white mb-25">Wishlist</h1>
                             <ul class="breadcrumb__content--menu d-flex justify-content-center">
-                                <li class="breadcrumb__content--menu__items"><a class="text-white" href="index.html">Home</a></li>
+                                <li class="breadcrumb__content--menu__items"><a class="text-white" href="/seller-account/">Seller dashboard</a></li>
                                 <li class="breadcrumb__content--menu__items"><span class="text-white">Wishlist</span></li>
                             </ul>
                         </div>
@@ -21,98 +39,213 @@
             </div>
         </section>
         <!-- End breadcrumb section -->
-
+        <div class="container">
+            <div style="display: flex !important;" >
+                <form action="{% url 'FilterFunction' %}" method="post">
+                    {% csrf_token %}
+                    {% for category in categories %}
+    
+                    <div class="category_list">
+                        <input type="checkbox" onclick="GetInputVal('{{category.id}}');" id="{{category.id}}"  name="" >
+                        {{category.category_name}}</div>
+    
+                    {% endfor %}
+                    <button type="submit" style="margin-left: -79px; margin-bottom: 10px; position: absolute;">Filter</button>
+                </form>
+                
+            </div>
+        </div>
+       
         <!-- cart section start -->
         <section class="cart__section section--padding">
             <div class="container">
                 <div class="cart__section--inner">
                    
                         <h2 class="cart__title mb-40">Porduct List</h2>
-                        <ul class="d-flex">
-                            <form action="{% url 'FilterFunction' %}" method="post">
-                                {% csrf_token %}
-                                {% for category in categories %}
+                       
+    
+                        {% if product_list %}
+                            <div class="cart__table">
+                                <table class="cart__table--inner">
+                                    <thead class="cart__table--header">
+                                        <tr class="cart__table--header__items">
+                                            <th class="cart__table--header__list">Product</th>
+                                            <th class="cart__table--header__list">Price</th>
+                                            <th class="cart__table--header__list text-center">STOCK STATUS</th>
+                                            <th class="cart__table--header__list text-center">Product-Category</th>
+                                            <th class="cart__table--header__list text-right">Edit-product</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody class="cart__table--body">
+                                        {% for Page in product_list %}
+                                        <tr class="cart__table--body__items">
+                                            <td class="cart__table--body__list" id="">
+                                                <div class="cart__product d-flex align-items-center">
+                                                    <button type="button" class="wishlist__cart--btn primary__btn open" id="{{Page.id}}">
+                                                        delete
+                                                      </button>
+                                                      <!-- delete-model-button -->
+                                                      <div style="display: none;" class="pop-outer">
+                                                        <div class="pop-inner">
+                                                            <button class="close" style="margin-left: 435px; position: absolute;">X</button>
+                                                            <div class="container">
+                                                                <h>Do you want to delete this product permanently?</h>
+                                                                <form action="{% url 'DeleteProductPage' pk=Page.id %}" method="post">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="wishlist__cart--btn primary__btn open">
+                                                                        delete-permanently
+                                                                      </button>
+                                                                </form>
+                                                            </div>
+                                                            
+                                                            <div class="container" style="margin-top: 90px;">
+                                                                <h>Do you want to Inactive this product?</h>
+                                                                <form action="{% url 'RemoveProductPage' product=Page.id %}" method="delete">
+                                                                    <button type="submit" class="wishlist__cart--btn primary__btn open">
+                                                                        Inactive
+                                                                      </button>
+                                                                </form>
+                                                            </div>
+                                                            
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <!-- edit-product-model -->
 
-                                <li class="category_list">
-                                    <input type="checkbox" onclick="GetInputVal('{{category.id}}');" id="{{category.id}}"  name="" >
-                                    {{category.category_name}}</li>
 
-                                {% endfor %}
-                                <button type="submit" style="margin-left: -79px; margin-bottom: 10px; position: absolute;">Filter</button>
-                            </form>
+                                                    <div class="cart__thumbnail">
+                                                        <a href="{% url 'product_page' product=Page.id %}"><img class="border-radius-5" src="{{Page.product_image.url}}" alt="product"></a>
+                                                    </div>
+                                                    <div class="cart__content">
+                                                        <h4 class="cart__content--title"><a href="{% url 'product_page' product=Page.id %}">{{Page.product_name}}</a></h4>
+                                                        <b>Description</b> <p style="word-wrap: break-word !important;">{{Page.product_description}}</p>
+                                                        <!-- <span class="cart__content--variant">COLOR: Blue</span>
+                                                        <span class="cart__content--variant">WEIGHT: 2 Kg</span> -->
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="cart__table--body__list">
+                                                <span class="cart__price">£{{Page.product_price}}</span>
+                                            </td>
+                                            
+                                            <td class="cart__table--body__list text-center">
+                                                <span class="in__stock text__secondary">in stock</span>
+                                            </td>
+                                            <td class="cart__table--body__list text-center">
+                                                {% if Page.product_category.category_name %}
+                                                    <span class="cart__price">{{Page.product_category.category_name}}</span>
+                                                {% else %}
+                                                    <span class="cart__price">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="cart__table--body__list text-right">
+                                                <a type="button" href="{% url 'EditProductView' product=Page.id %}" class="wishlist__cart--btn primary__btn open1" >Edit-product</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table> 
                             
-                        </ul>
-                        
-                        
-                        <div class="cart__table">
-                            <table class="cart__table--inner">
-                                <thead class="cart__table--header">
-                                    <tr class="cart__table--header__items">
-                                        <th class="cart__table--header__list">Product</th>
-                                        <th class="cart__table--header__list">Price</th>
-                                        <th class="cart__table--header__list text-center">STOCK STATUS</th>
-                                        <th class="cart__table--header__list text-center">Product-Category</th>
-                                        <th class="cart__table--header__list text-right">Edit-product</th>
-                                    </tr>
-                                </thead>
-                                
-                                <tbody class="cart__table--body">
-                                    {% for Page in page_object %}
-                                    <tr class="cart__table--body__items">
-                                        <td class="cart__table--body__list" id="">
-                                            <div class="cart__product d-flex align-items-center">
-                                                <a class="cart__remove--btn" href="{% url 'RemoveProductPage' product=Page.id %}">
-                                                    <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="16px" height="16px"><path d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z"/></svg>
-                                                </a>
-                                                <div class="cart__thumbnail">
-                                                    <a href="{% url 'product_page' product=Page.id %}"><img class="border-radius-5" src="{{Page.product_image}}" alt="product"></a>
-                                                </div>
-                                                <div class="cart__content">
-                                                    <h4 class="cart__content--title"><a href="{% url 'product_page' product=Page.id %}">{{Page.product_name}}</a></h4>
-                                                    <b>Description</b> <p style="word-wrap: break-word !important;">{{Page.product_description}}</p>
-                                                    <!-- <span class="cart__content--variant">COLOR: Blue</span>
-                                                    <span class="cart__content--variant">WEIGHT: 2 Kg</span> -->
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="cart__table--body__list">
-                                            <span class="cart__price">£{{Page.product_price}}.00</span>
-                                        </td>
-                                        
-                                        <td class="cart__table--body__list text-center">
-                                            <span class="in__stock text__secondary">in stock</span>
-                                        </td>
-                                        <td class="cart__table--body__list text-center">
-                                            {% if Page.product_category.category_name %}
-                                                <span class="cart__price">{{Page.product_category.category_name}}</span>
-                                            {% else %}
-                                                <span class="cart__price">-</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="cart__table--body__list text-right">
-                                            <a class="wishlist__cart--btn primary__btn" href="#">Edit-product</a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table> 
-                            <div class="continue__shopping d-flex justify-content-between">
-                                <div class="pagination">
-                                    <span>
-                                        {% if page_object.has_previous %}
-                                            <a href="?page={{page_object.previous_page_number}}" style="margin-left: -88px; position: absolute;">Previous</a>
-                                        {% endif %}
-                                
-                                        <span>Page {{page_object.number}} of {{page_object.paginator.num_pages}}</span>
-                                
-                                        {% if page_object.has_next %}
-                                            <a href="?page={{page_object.next_page_number}}" style="margin-left: 26px;">Next</a>
-                                        {% endif %}
-                                    </span>
-                                </div>
-                               
                             </div>
-                        </div> 
+                        {% else %}
+                            <div class="cart__table">
+                                <table class="cart__table--inner">
+                                    <thead class="cart__table--header">
+                                        <tr class="cart__table--header__items">
+                                            <th class="cart__table--header__list">Product</th>
+                                            <th class="cart__table--header__list">Price</th>
+                                            <th class="cart__table--header__list text-center">STOCK STATUS</th>
+                                            <th class="cart__table--header__list text-center">Product-Category</th>
+                                            <th class="cart__table--header__list text-right">Edit-product</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody class="cart__table--body">
+                                        {% for Page in page_object %}
+                                        <tr class="cart__table--body__items">
+                                            <td class="cart__table--body__list" id="">
+                                                <div class="cart__product d-flex align-items-center">
+                                                    <button type="button" class="wishlist__cart--btn primary__btn open" id="{{Page.id}}">
+                                                        delete
+                                                      </button>
+                                                      <!-- delete-model pop-up -->
+                                                      <div style="display: none;" class="pop-outer">
+                                                        <div class="pop-inner">
+                                                            <button class="close" style="margin-left: 435px; position: absolute;">X</button>
+                                                            <div class="container">
+                                                                <h>Do you want to delete this product permanently?</h>
+                                                                <form action="{% url 'DeleteProductPage' pk=Page.id %}" method="post">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="wishlist__cart--btn primary__btn open">
+                                                                        delete-permanently
+                                                                      </button>
+                                                                </form>
+                                                            </div>
+                                                            
+                                                            <div class="container" style="margin-top: 90px;">
+                                                                <h>Do you want to Inactive this product?</h>
+                                                                <form action="{% url 'RemoveProductPage' product=Page.id %}" method="get">
+                                                                    <button type="submit" class="wishlist__cart--btn primary__btn open">
+                                                                        Inactive
+                                                                      </button>
+                                                                </form>
+                                                            </div>
+                                                            
+                                                            
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="cart__thumbnail">
+                                                        <a href="{% url 'product_page' product=Page.id %}"><img class="border-radius-5" src="{{Page.product_image.url}}" alt="product"></a>
+                                                    </div>
+                                                    <div class="cart__content">
+                                                        <h4 class="cart__content--title"><a href="{% url 'product_page' product=Page.id %}">{{Page.product_name}}</a></h4>
+                                                        <b>Description</b> <p style="word-wrap: break-word !important;">{{Page.product_description}}</p>
+                                                        <!-- <span class="cart__content--variant">COLOR: Blue</span>
+                                                        <span class="cart__content--variant">WEIGHT: 2 Kg</span> -->
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="cart__table--body__list">
+                                                <span class="cart__price">£{{Page.product_price}}.00</span>
+                                            </td>
+                                            
+                                            <td class="cart__table--body__list text-center">
+                                                <span class="in__stock text__secondary">in stock</span>
+                                            </td>
+                                            <td class="cart__table--body__list text-center">
+                                                {% if Page.product_category.category_name %}
+                                                    <span class="cart__price">{{Page.product_category.category_name}}</span>
+                                                {% else %}
+                                                    <span class="cart__price">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="cart__table--body__list text-right">
+                                                <a type="button" href="{% url 'EditProductView' product=Page.id %}" class="wishlist__cart--btn primary__btn open1" >Edit-product</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}    
+                                    </tbody>
+                                </table> 
+                                <div class="continue__shopping d-flex justify-content-between">
+                                    <div class="pagination">
+                                        <span>
+                                            {% if page_object.has_previous %}
+                                                <a href="?page={{page_object.previous_page_number}}" style="margin-left: -88px; position: absolute;">Previous</a>
+                                            {% endif %}
+                                    
+                                            <span>Page {{page_object.number}} of {{page_object.paginator.num_pages}}</span>
+                                    
+                                            {% if page_object.has_next %}
+                                                <a href="?page={{page_object.next_page_number}}" style="margin-left: 26px;">Next</a>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                
+                                </div>
+                            </div> 
+                        {% endif %}
 
                   
                 </div>
@@ -825,6 +958,10 @@
             </div>
         </section>
         <!-- End shipping section -->
+
+
+<!-- pop-up -->
+
 <script>
     function GetInputVal(item) {
         var point=document.getElementById(`${item}`).checked;
@@ -837,6 +974,17 @@
             $('.category_list').find(`#${item}`).removeAttr('value');
         }
     }
+    $(document).ready(function (){
+                $(".open").click(function (){
+                
+                    $(".pop-outer").fadeIn("slow");
+                });
+                $(".close").click(function (){
+                    $(".pop-outer").fadeOut("slow");
+                });
+            });
+ 
+
 </script>
     </main>
 
