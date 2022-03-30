@@ -1,3 +1,5 @@
+from http.client import responses
+from itertools import product
 from urllib import response
 from django import views
 from django.http import JsonResponse
@@ -15,6 +17,8 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 import datetime
+from django.db.models import Q
+from django.core import serializers
 # Create your views here.
 
 class HomeView(View):
@@ -121,7 +125,6 @@ class SellerLoginView(View):
                return redirect('HomeView')
           else:
                return render(request,'app/seller_login.html')
-
      def post(self, request):
           email = request.POST.get('email')
           password = request.POST.get('password') 
@@ -166,8 +169,10 @@ class AddProductView(View):
                return redirect('AddProductView')
 
 class EditProductView(View):
-     def get(self,request):
-          return render(request,'app/edit-product.html')
+     def get(self,request,product):
+          get_product=Product.objects.get(id=product)
+          categories=Category.objects.all()
+          return render(request,'app/edit-product.html',{'product':get_product,'categories':categories})
 
      def post(self, request,product):
           current_datetime = datetime.datetime.now()
@@ -176,7 +181,7 @@ class EditProductView(View):
           product_price = request.POST.get('product_price')
           product_category = request.POST.get('product_category')
           product_image = request.FILES['product_image']
-          exist_product=Product.objects.get(product_name=product_name)
+          exist_product=Product.objects.get(id=product)
           cat=Category.objects.get(category_name=product_category)
           if product_name == exist_product.product_name:
                messages.warning(request, f'product "{product_name}" is already exists')
@@ -184,9 +189,13 @@ class EditProductView(View):
           else:
                exist_product.product_name=product_name
                exist_product.product_description=product_description
-               exist_product.product_price=product_price 
-               exist_product.product_image=product_image
-               exist_product.product_category=cat,
+               exist_product.product_price=product_price
+               try:
+                    if exist_product.product_image:
+                         exist_product.product_image=product_image
+               except:
+                    pass
+               exist_product.product_category=cat
                exist_product.date_modified=current_datetime
                exist_product.save()
                return redirect('ProductListPage')
@@ -194,7 +203,8 @@ class EditProductView(View):
 
 class AddCategoryView(View):
     def get(self,request):
-          return render(request,'app/add-category.html')
+          categories=Category.objects.all()
+          return render(request,'app/add-category.html',{'categories':categories})
     def post(self, request):
           category = request.POST['product_category']
           try:
@@ -207,7 +217,7 @@ class AddCategoryView(View):
 
 
 class FilterFunction(View):
-     def get(self, request):  
+     def post(self, request):  
           categories=Category.objects.all()
           arr=[]     
           for i in request.POST:
@@ -217,6 +227,33 @@ class FilterFunction(View):
           return render(request,'app/product-list.html',{'product_list':product_list,"categories":categories})
 
 
+class InactiveProductList(View):
+     def get(self,request):
+          products = Product.objects.filter(is_active=False).order_by('date_created')
+          paginator = Paginator(products, 10)
+          page_number = request.GET.get('page')
+          page_object = paginator.get_page(page_number)
+          categories=Category.objects.all()
+          return render(request,'app/inactive-products.html',{"page_object":page_object,"categories":categories})
+     def post(self,request):
+          print()
+          activate_product=Product.objects.filter(id=request.POST.get('activate_product')).update(is_active=True)
+     
+          return redirect('InactiveProductList')
+    
+class SearchProduct(View):
+     def post(self,request):
+          
+          search=request.POST.get('search_product')
+          
+          # searched = Product.objects.filter(Q(product_name__icontains=search) | Q(content__icontains=search))
+          searched = Product.objects.filter(Q(product_name__icontains=search)).exclude(is_active=False)
+          if searched.exists():
+               data = serializers.serialize('json', list(searched),fields=('product_name','product_description','product_price','product_image','product_category','pk'))
+               x_data=serializers.serialize('json', list(searched))
+               print(data,"**********************************^^^DDDDDDDDDDDDDDDD**************")
+                    
+               return JsonResponse(data,safe=False)
           
 
 class Logout(View):

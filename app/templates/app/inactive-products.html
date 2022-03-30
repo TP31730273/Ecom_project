@@ -1,0 +1,214 @@
+{% extends 'app/base.html' %} 
+{% load static %} 
+{% block content %}
+<style>
+    .pop-outer {
+                background-color: rgba(0, 0, 0, 0.5);
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .pop-inner {
+                background-color: #fff;
+                width: 500px;
+                height: 300px;
+                padding: 25px;
+                margin: 5% auto;
+            }
+</style>
+    <main class="main__content_wrapper">
+
+        <!-- Start breadcrumb section -->
+        <section class="breadcrumb__section breadcrumb__bg">
+            <div class="container">
+                <div class="row row-cols-1">
+                    <div class="col">
+                        <div class="breadcrumb__content text-center">
+                            <h1 class="breadcrumb__content--title text-white mb-25">My Account</h1>
+                            <ul class="breadcrumb__content--menu d-flex justify-content-center">
+                                <li class="breadcrumb__content--menu__items"><a class="text-white" href="index.html">Home</a></li>
+                                <li class="breadcrumb__content--menu__items"><span class="text-white">My Account</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End breadcrumb section -->
+        
+        <!-- my account section start -->
+        <section class="my__account--section section--padding">
+            <div class="container">
+                <p class="account__welcome--text">Hello, Seller welcome to your dashboard!</p>
+                <div class="my__account--section__inner border-radius-10 d-flex">
+                    {% include 'app/selller-part.html' %}
+                    <div class="account__wrapper">
+                        <section class="cart__section section--padding">
+                            <div class="container">
+                                <div class="cart__section--inner">
+                                   
+                                    <div class="cart__table">
+                                        <table class="cart__table--inner">
+                                            <thead class="cart__table--header">
+                                                <tr class="cart__table--header__items">
+                                                    <th class="cart__table--header__list">Product</th>
+                                                    <th class="cart__table--header__list">Price</th>
+                                                    <th class="cart__table--header__list text-center">STOCK STATUS</th>
+                                                    <th class="cart__table--header__list text-center">Product-Category</th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody class="cart__table--body">
+                                                {% for Page in page_object %}
+                                                <tr class="cart__table--body__items">
+                                                    <td class="cart__table--body__list" id="">
+                                                        <div class="cart__product d-flex align-items-center">
+                                                            <button type="button" class="wishlist__cart--btn primary__btn open" id="{{Page.id}}">
+                                                                delete
+                                                              </button>
+                                                              <!-- delete-model pop-up -->
+                                                              <div style="display: none;" class="pop-outer">
+                                                                <div class="pop-inner">
+                                                                    <button class="close" style="margin-left: 435px; position: absolute;">X</button>
+                                                                    <div class="container">
+                                                                        <h>Do you want to delete this product permanently?</h>
+                                                                        <form action="#" method="post">
+                                                                            {% csrf_token %}
+                                                                            <button type="submit" class="wishlist__cart--btn primary__btn open">
+                                                                                delete-permanently
+                                                                              </button>
+                                                                        </form>
+                                                                    </div>
+                                                                    
+                                                                    <div class="container" style="margin-top: 90px;">
+                                                                        <h>Do you want to Activate this product?</h>
+                                                                        <form action="{% url 'InactiveProductList' %}" method="post">
+                                                                            {% csrf_token %}
+                                                                            <input type="text" hidden name="activate_product" value="{{Page.id}}">
+                                                                            <button type="submit" class="wishlist__cart--btn primary__btn open">
+                                                                                Activate
+                                                                              </button>
+                                                                        </form>
+                                                                    </div>
+                                                                    
+                                                                    
+                                                                </div>
+                                                            </div>
+        
+                                                            <div class="cart__thumbnail">
+                                                                <a href="#"><img class="border-radius-5" src="{{Page.product_image.url}}" alt="product"></a>
+                                                            </div>
+                                                            <div class="cart__content">
+                                                                <h4 class="cart__content--title"><a href="#">{{Page.product_name}}</a></h4>
+                                                                <b>Description</b> <p style="word-wrap: break-word !important;">{{Page.product_description}}</p>
+                                                                <!-- <span class="cart__content--variant">COLOR: Blue</span>
+                                                                <span class="cart__content--variant">WEIGHT: 2 Kg</span> -->
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="cart__table--body__list">
+                                                        <span class="cart__price">£{{Page.product_price}}.00</span>
+                                                    </td>
+                                                    
+                                                    <td class="cart__table--body__list text-center">
+                                                        <span class="in__stock text__secondary">in stock</span>
+                                                    </td>
+                                                    <td class="cart__table--body__list text-center">
+                                                        {% if Page.product_category.category_name %}
+                                                            <span class="cart__price">{{Page.product_category.category_name}}</span>
+                                                        {% else %}
+                                                            <span class="cart__price">-</span>
+                                                        {% endif %}
+                                                    </td>
+                                                   
+                                                </tr>
+                                                {% endfor %}    
+                                            </tbody>
+                                        </table> 
+                                        <div class="continue__shopping d-flex justify-content-between">
+                                            <div class="pagination">
+                                                <span>
+                                                    {% if page_object.has_previous %}
+                                                        <a href="?page={{page_object.previous_page_number}}" style="margin-left: -88px; position: absolute;">Previous</a>
+                                                    {% endif %}
+                                            
+                                                    <span>Page {{page_object.number}} of {{page_object.paginator.num_pages}}</span>
+                                            
+                                                    {% if page_object.has_next %}
+                                                        <a href="?page={{page_object.next_page_number}}" style="margin-left: 26px;">Next</a>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        
+                                        </div>
+                                    </div> 
+                                  
+                                </div>
+                            </div>     
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- my account section end -->
+
+        <!-- Start shipping section -->
+        <section class="shipping__section2 shipping__style3 section--padding pt-0">
+            <div class="container">
+                <div class="shipping__section2--inner shipping__style3--inner d-flex justify-content-between">
+                    <div class="shipping__items2 d-flex align-items-center">
+                        <div class="shipping__items2--icon">
+                            <img src="assets/img/other/shipping1.png" alt="">
+                        </div>
+                        <div class="shipping__items2--content">
+                            <h2 class="shipping__items2--content__title h3">Shipping</h2>
+                            <p class="shipping__items2--content__desc">From handpicked sellers</p>
+                        </div>
+                    </div>
+                    <div class="shipping__items2 d-flex align-items-center">
+                        <div class="shipping__items2--icon">
+                            <img src="assets/img/other/shipping2.png" alt="">
+                        </div>
+                        <div class="shipping__items2--content">
+                            <h2 class="shipping__items2--content__title h3">Payment</h2>
+                            <p class="shipping__items2--content__desc">From handpicked sellers</p>
+                        </div>
+                    </div>
+                    <div class="shipping__items2 d-flex align-items-center">
+                        <div class="shipping__items2--icon">
+                            <img src="assets/img/other/shipping3.png" alt="">
+                        </div>
+                        <div class="shipping__items2--content">
+                            <h2 class="shipping__items2--content__title h3">Return</h2>
+                            <p class="shipping__items2--content__desc">From handpicked sellers</p>
+                        </div>
+                    </div>
+                    <div class="shipping__items2 d-flex align-items-center">
+                        <div class="shipping__items2--icon">
+                            <img src="assets/img/other/shipping4.png" alt="">
+                        </div>
+                        <div class="shipping__items2--content">
+                            <h2 class="shipping__items2--content__title h3">Support</h2>
+                            <p class="shipping__items2--content__desc">From handpicked sellers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End shipping section -->
+<script>
+       $(document).ready(function (){
+                $(".open").click(function (){
+                
+                    $(".pop-outer").fadeIn("slow");
+                });
+                $(".close").click(function (){
+                    $(".pop-outer").fadeOut("slow");
+                });
+            });
+</script>
+    </main>
+{% endblock %}

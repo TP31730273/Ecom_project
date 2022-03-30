@@ -140,7 +140,7 @@
                                                 {% endif %}
                                             </td>
                                             <td class="cart__table--body__list text-right">
-                                                <a type="button" href="{% url 'EditProductView' product=Page.id %}" class="wishlist__cart--btn primary__btn open1" >Edit-product</a>
+                                                <a  href="{% url 'EditProductView' product=Page.id %}" class="wishlist__cart--btn primary__btn open1" >Edit-product</a>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -222,7 +222,7 @@
                                                 {% endif %}
                                             </td>
                                             <td class="cart__table--body__list text-right">
-                                                <a type="button" href="{% url 'EditProductView' product=Page.id %}" class="wishlist__cart--btn primary__btn open1" >Edit-product</a>
+                                                <a href="{% url 'EditProductView' product=Page.id %}" class="wishlist__cart--btn primary__btn open1" >Edit-product</a>
                                             </td>
                                         </tr>
                                         {% endfor %}    

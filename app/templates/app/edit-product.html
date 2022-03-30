@@ -29,27 +29,24 @@
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     {% include 'app/selller-part.html' %}
                     <div class="account__wrapper">
-                        <form action="{% url 'EditProductView' product=Page.id %}" method="post" enctype="multipart/form-data">
+                        <form action="{% url 'EditProductView' product=product.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="account__content">
                                 
                                 <h3 class="account__content--title mb-20">Edit-product</h3>
                                 <div class="account__login--inner">
-                                    <input class="account__login--input" placeholder="Product-name" type="text"  value="{{Page.product_name}}" name="product_name" id="product_name" required>
-                                    <textarea class="account__login--input" placeholder="Product-description"  name="product_description" id="product_description" required>{{Page.product_description}}</textarea>
-                                    <input class="account__login--input" placeholder="Product-price" type="number" value="{{Page.product_price}}" name="product_price" id="product_price">
+                                    <input class="account__login--input" placeholder="Product-name" type="text"  value="{{product.product_name}}" name="product_name" id="product_name" required>
+                                    <textarea class="account__login--input" placeholder="Product-description"  name="product_description" id="product_description" required>{{product.product_description}}</textarea>
+                                    <input class="account__login--input" placeholder="Product-price" type="number" value="{{product.product_price}}" name="product_price" id="product_price">
                                     <div id="product_image"  style="margin-bottom: 30px;">
                                         
                                         <label for="product_category">Product-Category:</label>
-                                        <select name="product_category" id="product_category" value="">
+                                        <select name="product_category" id="product_category" >
                                             
-                                            <option value="{{Page.product_category.category_name}}">{{Page.product_category.category_name}}</option>
                                             {% for category in categories %}
-                                            {% if Page.product_category.category_name not in categories %}
-                                            <option value="{{category.category_name}}">{{category.category_name}}</option>
-                                            {% else %}
-                                            <option value="{{category.category_name}}">{{category.category_name}}</option>
-                                            {% endif %}
+                                            
+                                                <option value="{{category.category_name}}" {% if product.product_category.category_name == category.category_name %} selected="selected" {% else %}{% endif %}>{{category.category_name}}</option>
+                    
                                             {% endfor %}
                                           </select>
                                     </div>

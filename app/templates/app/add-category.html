@@ -26,20 +26,47 @@
             <div class="container">
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     {% include 'app/selller-part.html' %}
-                    <div class="account__wrapper">
+                    <div class="account__wrapper" style="width: 500px;">
                         <form action="{% url 'AddCategoryView' %}" method="post">
                             {% csrf_token %}
                             <div class="account__content">
                                 <div id="error-msg"></div>
                                 <h3 class="account__content--title mb-20">Create-Category</h3>
                                 <div class="account__login--inner">
-                                        <input class="account__login--input" placeholder="Product-Category" type="text" required name="product_category"> 
+                                        <input class="account__login--input" placeholder="Product-Category" type="text" required name="product_category" style="width: 300px;"> 
                                     </div>
                                     
                                 </div>
                                 <button class="new__address--btn primary__btn mb-25" id="Add-product-btn" type="submit">Add Category</button>
                             </div>
                         </form>
+                        <div class="cart__table">
+                            <table class="cart__table--inner">
+                                <thead class="cart__table--header">
+                                    <tr class="cart__table--header__items">
+                                       
+                                        <th class="cart__table--header__list">Category-list</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody class="cart__table--body">
+                                    
+                                   
+
+                                    {% for category in categories %}
+                                    <tr class="cart__table--body__items">
+                                        <td class="cart__table--body__list">
+                                            <span class="cart__price">{{ forloop.counter }}. {{category.category_name}}</span>
+                                        </td>
+                                        
+                                    </tr>
+                                    {% endfor %}
+                                   
+                                </tbody>
+                            </table> 
+                        
+                        </div>
+                        
                     </div>
                 </div>
             </div>

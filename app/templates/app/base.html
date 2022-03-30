@@ -130,21 +130,21 @@
                         <h1 class="main__logo--title"><a class="main__logo--link" href="index.html"><img class="main__logo--img" src="{% static 'img/logo/nav-log.png" alt="logo-img"></a></h1>
                     </div>
                     <div class="header__search--widget header__sticky--none d-none d-lg-block">
-                        <form class="d-flex header__search--form" action="#">
+                        <form class="d-flex header__search--form" method="post">
+                            {% csrf_token %}
                             <div class="header__select--categories select">
-                                <select class="header__select--inner">
+                                <select class="header__select--inner" name="product_category">
                                     <option selected value="1">All Categories</option>
-                                    <option value="2">Accessories</option>
-                                    <option value="3">Accessories & More</option>
-                                    <option value="4">Camera & Video </option>
-                                    <option value="5">Butters & Eggs </option>
+                                {% for category in categories %}
+                                    <option value="{{category.category_name}}">{{category.category_name}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="header__search--box">
                                 <label>
-                                    <input class="header__search--input" placeholder="Keyword here..." type="text">
+                                    <input class="header__search--input" placeholder="Search product here..." type="text" name="search_product">
                                 </label>
-                                <button class="header__search--button bg__secondary text-white" type="submit" aria-label="search button">
+                                <button class="header__search--button bg__secondary text-white" id="search_products"   type="submit" aria-label="search button">
                                     <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="27.51" height="26.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path></svg>
                                 </button>
                             </div>
@@ -364,12 +364,7 @@
                     {% elif request.session.seller_email %}
                     <div class="header__account header__account2 header__sticky--block">
                         <ul class="d-flex">
-                            <li class="header__account--items header__account2--items  header__account--search__items d-none d-lg-block">
-                                <a class="header__account--btn search__open--btn" href="javascript:void(0)" data-offcanvas>
-                                    <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  
-                                    <span class="visually-hidden">Search</span>
-                                </a>
-                            </li>
+                            
                             <li class="header__account--items header__account2--items">
                                 <a class="header__account--btn" href="{% url 'MySellerAccountView' %}">
                                     <svg xmlns="http://www.w3.org/2000/svg"  width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
@@ -796,9 +791,7 @@
             <div class="predictive__search--box__inner">
                 <h2 class="predictive__search--title">Search Products</h2>
                 <form class="predictive__search--form" action="#">
-                    <label>
-                        <input class="predictive__search--input" placeholder="Search Here" type="text">
-                    </label>
+                    
                     <button class="predictive__search--button" aria-label="search button" type="submit"><svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  </button>
                 </form>
             </div>
@@ -967,6 +960,7 @@
 <!-- End footer section -->
     <!-- Scroll top bar -->
 
+
     <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
 
   <!-- All Script JS Plugins here  -->
@@ -978,7 +972,93 @@
 
   <!-- Customscript js -->
   <script src="{% static 'js/script.js' %}"></script>
-  
+  <script>
+      $('#search_products').on('click',function (event) {
+          event.preventDefault();
+          var csrf_token = $("[name='csrfmiddlewaretoken']").val()
+          var search_product = $("[name='search_product']").val()
+         console.log("JHGJHGJHGJHGHGJHGGJH&^&*^&*^&*^&^&*^&*^&*");
+         $('.main__content_wrapper').html(`<section class="cart__section section--padding">
+            <div class="container">
+                <div class="cart__section--inner">
+                   
+                        <h2 class="cart__title mb-40">Searched Porduct List</h2>
+                       
+                            <div class="cart__table">
+                                <table class="cart__table--inner">
+                                    <thead class="cart__table--header">
+                                        <tr class="cart__table--header__items">
+                                            <th class="cart__table--header__list">Product</th>
+                                            <th class="cart__table--header__list">Price</th>
+                                            <th class="cart__table--header__list text-center">STOCK STATUS</th>
+                                            
+                                            
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody class="cart__table--body" id="product_list_table">
+                                       
+                                        
+                                    </tbody>
+                                </table> 
+                            
+                            </div>
+                </div>
+            </div>     
+        </section>`)
+
+        $.ajax({
+              url: '/searched-products/',
+              type: 'POST',
+              data: {
+                  csrfmiddlewaretoken: csrf_token,
+                  search_product: search_product,
+              },
+              success: function (response) {
+                  
+                  var data=JSON.parse(response);
+                  for (const key in data) {
+                      let val = data[key].fields;
+                      
+                      
+                      $('#product_list_table').append(`<tr class="cart__table--body__items">
+        <td class="cart__table--body__list" id="">
+            <div class="cart__product d-flex align-items-center">
+
+                <div class="cart__thumbnail">
+                    <a href="/product-page/${data[key].pk}/"><img class="border-radius-5" src="/media/${val.product_image}" alt="product"></a>
+                </div>
+                <div class="cart__content">
+                    <h4 class="cart__content--title"><a href="/product-page/${data[key].pk}/">${val.product_name}</a></h4>
+                    <b>Description</b> <p style="word-wrap: break-word !important;">${val.product_description}</p>
+                    <!-- <span class="cart__content--variant">COLOR: Blue</span>
+                    <span class="cart__content--variant">WEIGHT: 2 Kg</span> -->
+                </div>
+            </div>
+        </td>
+        <td class="cart__table--body__list">
+            <span class="cart__price">$${val.product_price}</span>
+        </td>
+        
+        <td class="cart__table--body__list text-center">
+            <span class="in__stock text__secondary">in stock</span>
+        </td>
+        
+        
+    </tr>`)
+    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&',val);
+                  }
+                  
+              },
+              error: function (err) {
+                  console.log("err*(********************************************************or");
+                  $('#product_list_table').html(`<p>Product not found</p>`)
+                  
+              }
+          });
+          
+    });
+  </script>
 </body>
 
 <!-- Mirrored from risingtheme.com/html/demo-suruchi/suruchi/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 22 Mar 2022 11:23:46 GMT -->
