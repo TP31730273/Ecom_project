@@ -35,17 +35,24 @@
                                 
                                 <h3 class="account__content--title mb-20">Create-product</h3>
                                 <div class="account__login--inner">
+                                    <b><label for="product_name">Product-Name:</label></b>
                                     <input class="account__login--input" placeholder="Product-name" type="text"  name="product_name">
+                                    <b><label for="product_description">Product-Description:</label></b>
                                     <textarea class="account__login--input" placeholder="Product-description"  name="product_description"></textarea>
+                                    <b><label for="product_price">Product-Price:</label></b>
                                     <input class="account__login--input" placeholder="Product-price" type="number" name="product_price" id="product_price">
                                     <div id="product_image"  style="margin-bottom: 30px;">
                                         
                                         <label for="product_category">Product-Category:</label>
+                                        {% if all_category %}
                                         <select name="product_category" id="product_category">
-                                            {% for category in all_category%}
-                                            <option value="{{category.category_name}}">{{category.category_name}}</option>
-                                            {% endfor %}
-                                          </select>
+                                                {% for category in all_category%}
+                                                <option value="{{category.category_name}}">{{category.category_name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% else %}
+                                        <a href="/add-category/" class="new__address--btn primary__btn mb-25">Add-new category</a>
+                                        {% endif %}
                                     </div>
                                     <div id="product_image"  style="margin-bottom: 30px;">
                                         <label for="product_image">Product-Image:</label>

@@ -1,3 +1,4 @@
+from genericpath import exists
 from http.client import responses
 from itertools import product
 from urllib import response
@@ -39,7 +40,7 @@ class ProductListPage(View):
           paginator = Paginator(products, 1)
           page_number = request.GET.get('page')
           page_object = paginator.get_page(page_number)
-          categories=Category.objects.all()
+          categories=Category.objects.all().order_by("-id")
           return render(request,'app/product-list.html',{"page_object":page_object,"categories":categories})
      
 
@@ -64,7 +65,6 @@ class DeleteProductPage(DeleteView):
     pk_url_kwarg ='pk'
     success_url = '/product-list/'
     
-
 class RegisterView(View):
 
      def get(self,request):
@@ -171,7 +171,7 @@ class AddProductView(View):
 class EditProductView(View):
      def get(self,request,product):
           get_product=Product.objects.get(id=product)
-          categories=Category.objects.all()
+          categories=Category.objects.all().order_by("-id")
           return render(request,'app/edit-product.html',{'product':get_product,'categories':categories})
 
      def post(self, request,product):
@@ -180,45 +180,66 @@ class EditProductView(View):
           product_description = request.POST.get('product_description')
           product_price = request.POST.get('product_price')
           product_category = request.POST.get('product_category')
-          product_image = request.FILES['product_image']
           exist_product=Product.objects.get(id=product)
           cat=Category.objects.get(category_name=product_category)
-          if product_name == exist_product.product_name:
-               messages.warning(request, f'product "{product_name}" is already exists')
-               return redirect('EditProductView')
-          else:
+          try:
                exist_product.product_name=product_name
-               exist_product.product_description=product_description
-               exist_product.product_price=product_price
-               try:
-                    if exist_product.product_image:
-                         exist_product.product_image=product_image
-               except:
-                    pass
-               exist_product.product_category=cat
-               exist_product.date_modified=current_datetime
-               exist_product.save()
-               return redirect('ProductListPage')
+          except:
+                messages.warning(request, f'product "{product_name}" is already exists')
+                return redirect('EditProductView')
+          exist_product.product_description=product_description
+          exist_product.product_price=product_price
+          try:
+               product_image = request.FILES['product_image']
+               if product_image:
+                    exist_product.product_image=product_image
+          except:
+               pass
+          exist_product.product_category=cat
+          exist_product.date_modified=current_datetime
+          exist_product.save()
+          return redirect('ProductListPage')
          
 
 class AddCategoryView(View):
     def get(self,request):
-          categories=Category.objects.all()
+          categories=Category.objects.all().order_by("-id")
           return render(request,'app/add-category.html',{'categories':categories})
-    def post(self, request):
-          category = request.POST['product_category']
+    def post(self, request):  
           try:
-            add_category = Category(category_name=category)
-            add_category.save()
-            return redirect('AddCategoryView')
+               category = request.POST['product_category']
+               add_category = Category(category_name=category)
+               add_category.save()
+          #   categories=Category.objects.all()
+          #   cat_list=[[category.id,category.category_name] for category in categories]
+            
+
+               response={
+                 "success":"success",
+                 "id":add_category.id,
+               #   "categories":cat_list,
+               }
+               return JsonResponse(response)
+               
           except:
-               messages.warning(request, f'category "{category}" is already exists')
-               return redirect('AddCategoryView')
+               response={
+                 "error":"error",
+            }
+               return JsonResponse(response)
+
+class DeleteCategoryView(View):
+     
+     def post(self,request,pk):
+          Category.objects.filter(id=pk).delete()
+          response={
+               "delete":True,
+          }
+          return JsonResponse(response)
 
 
 class FilterFunction(View):
      def post(self, request):  
-          categories=Category.objects.all()
+          categories=Category.objects.all().order_by("-id")
           arr=[]     
           for i in request.POST:
                arr.append(i)
@@ -233,7 +254,7 @@ class InactiveProductList(View):
           paginator = Paginator(products, 10)
           page_number = request.GET.get('page')
           page_object = paginator.get_page(page_number)
-          categories=Category.objects.all()
+          categories=Category.objects.all().order_by("-id")
           return render(request,'app/inactive-products.html',{"page_object":page_object,"categories":categories})
      def post(self,request):
           print()

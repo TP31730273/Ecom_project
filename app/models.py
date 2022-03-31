@@ -1,4 +1,5 @@
 from email.policy import default
+from operator import contains
 from tkinter import CASCADE
 from unicodedata import name
 from django.db import models
@@ -29,7 +30,7 @@ class Sellers(AbstractBaseUser):
         return self.username
 
 class Category(models.Model):
-    category_name = models.CharField(max_length=100, blank=True, null=True)
+    category_name = models.CharField(unique=True,max_length=100)
 
     def __str__(self):
         return self.category_name

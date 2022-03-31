@@ -27,41 +27,52 @@
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     {% include 'app/selller-part.html' %}
                     <div class="account__wrapper" style="width: 500px;">
-                        <form action="{% url 'AddCategoryView' %}" method="post">
+                        
                             {% csrf_token %}
                             <div class="account__content">
-                                <div id="error-msg"></div>
+                                
                                 <h3 class="account__content--title mb-20">Create-Category</h3>
                                 <div class="account__login--inner">
-                                        <input class="account__login--input" placeholder="Product-Category" type="text" required name="product_category" style="width: 300px;"> 
+                                        <input class="account__login--input" placeholder="Product-Category" type="text" required name="add_product_category" style="width: 300px;"> 
                                     </div>
                                     
                                 </div>
-                                <button class="new__address--btn primary__btn mb-25" id="Add-product-btn" type="submit">Add Category</button>
+                                <button class="new__address--btn primary__btn mb-25" id="Add-category-btn" type="button">Add Category</button>
+                                <div style="position: absolute; color: red; margin-top: 55px; margin-left: 0px;" id="err_msg">
+                                    {% for message in messages %}
+                                      {{message}}
+                                      {% endfor %}
+                                  </div>
                             </div>
-                        </form>
+                      
                         <div class="cart__table">
                             <table class="cart__table--inner">
                                 <thead class="cart__table--header">
                                     <tr class="cart__table--header__items">
                                        
                                         <th class="cart__table--header__list">Category-list</th>
+                                        <th class="cart__table--header__list">Delete-category</th>
                                     </tr>
                                 </thead>
                                 
-                                <tbody class="cart__table--body">
+                                <tbody class="cart__table--body" id="category_tabel">
                                     
-                                   
-
                                     {% for category in categories %}
                                     <tr class="cart__table--body__items">
                                         <td class="cart__table--body__list">
-                                            <span class="cart__price">{{ forloop.counter }}. {{category.category_name}}</span>
+                                            <span class="cart__price">  {{category.category_name}}</span>
+                                        </td>
+                                        <td class="cart__table--body__list" id="delete_row">
+                                           
+                                                {% csrf_token %}
+                                                <button class="new__address--btn primary__btn mb-25 delete_product" cat_id="{{category.id}}"   type="button">Delete Category</button>
+                                           
+                                            
                                         </td>
                                         
                                     </tr>
+
                                     {% endfor %}
-                                   
                                 </tbody>
                             </table> 
                         
@@ -118,16 +129,87 @@
         </section>
         <!-- End shipping section -->
 <script>
-    // $('#Add-product-btn').on('click',function (event) {
-    //     event.preventDefault();
-    //     $.ajax({
-    //             url: '/Added-product/',
-    //             type: 'POST',
-    //             success: function (response) {
-    //                 alert(response)
-    //                 }
-    //             })  
-    // });
+    $('#Add-category-btn').on('click',function (event) {
+        var csrf_token = $("[name='csrfmiddlewaretoken']").val()
+        var product_category = $("[name='add_product_category']").val()
+        var special_caracters = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+        var match_string = ' '
+        if (product_category === '' || product_category.match(match_string)) 
+        {
+            $('#err_msg').text(`"category should not be empty.`)
+        }else if (special_caracters.test(product_category)) {
+                $('#err_msg').text(`"category should not contains '/^,. \d+$/....' caracters.`)  
+                return true;
+        }else{
+            $('#err_msg').empty();
+            event.preventDefault();
+        $.ajax({
+                url: '/add-category/',
+                type: 'POST',
+                data: {
+                  csrfmiddlewaretoken: csrf_token,
+                  product_category: product_category,
+              },
+                success: function (response) {
+                    
+                    if (response['success']) {
+                        $('#category_tabel').prepend(`<tr class="cart__table--body__items">
+                                        <td class="cart__table--body__list">
+                                            <span class="cart__price">${product_category}</span>
+                                        </td>
+                                        <td class="cart__table--body__list" id="delete_row">
+                                                {% csrf_token %}
+                                                <button class="new__address--btn primary__btn mb-25 delete_product" cat_id="${response['id']}" type="button">Delete Category</button>
+                                        </td>
+                                        
+                                    </tr>`)
+                    }else if (response['error']) {
+                        $('#err_msg').text(`"${product_category}" category is already exists.`)
+                        
+                    }else if (response['empty']){
+                        $('#err_msg').text(`"category should not be empty.`)
+                    }
+                    
+                    }
+                })  
+
+        }
+      
+
+    });
+
+    // delete product
+
+   
+</script>
+<script>
+       
+        $('.delete_product').on('click',function (event) {
+            
+        var id = $(this).attr('cat_id');
+        var current_obj=$(this);
+        var csrf_token = $(this).parent().find("[name='csrfmiddlewaretoken']").val();
+        
+        event.preventDefault();
+        $.ajax({
+                url: `/delete-category/${id}`,
+                type: 'POST',
+                data: {
+                  csrfmiddlewaretoken: csrf_token,
+              },
+                success: function (response) {
+                    if (response['delete'] === true) {
+                     current_obj.parent().parent().empty()
+                       
+                    }else{
+                        $('#err_msg').text(`"Category is not deleted`)  
+                    }
+                    
+                    }
+                })  
+    });
+    
+
 </script>
     </main>
 

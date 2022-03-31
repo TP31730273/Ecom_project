@@ -39,22 +39,25 @@
             </div>
         </section>
         <!-- End breadcrumb section -->
-        <div class="container">
+        {% if categories %}
+        <div class="container header__bottom--inner position__relative d-none d-lg-flex justify-content-between align-items-center" style="display: flex !important;">
             <div style="display: flex !important;" >
                 <form action="{% url 'FilterFunction' %}" method="post">
                     {% csrf_token %}
                     {% for category in categories %}
     
-                    <div class="category_list">
+                    <div class="category_list d-lg-flex" style="float: left !important; padding: 10px;">
                         <input type="checkbox" onclick="GetInputVal('{{category.id}}');" id="{{category.id}}"  name="" >
                         {{category.category_name}}</div>
     
                     {% endfor %}
-                    <button type="submit" style="margin-left: -79px; margin-bottom: 10px; position: absolute;">Filter</button>
+                    <button type="submit" class="new__address--btn primary__btn mb-25" style="margin-left: -650px; margin-bottom: 10px; position: absolute;">Filter</button>
                 </form>
                 
             </div>
         </div>
+        {% else %}
+        {% endif %}
        
         <!-- cart section start -->
         <section class="cart__section section--padding">

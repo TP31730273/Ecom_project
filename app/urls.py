@@ -16,6 +16,7 @@ urlpatterns = [
     path('product-list/', ProductListPage.as_view(),name='ProductListPage'),
     path('inactive-product-list/', InactiveProductList.as_view(),name='InactiveProductList'),
     path('add-category/', AddCategoryView.as_view(),name='AddCategoryView'),
+    path('delete-category/<int:pk>',DeleteCategoryView.as_view(),name='DeleteCategoryView'),
     path('product-page/<int:product>/', ProductView.as_view(),name='product_page'),
     path('inactive-product/<int:product>/', RemoveProductPage.as_view(),name='RemoveProductPage'),
     path('delete-product/<pk>/', DeleteProductPage.as_view(),name='DeleteProductPage'),

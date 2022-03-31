@@ -24,6 +24,7 @@
 
 <body>
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    
     <!-- Start preloader -->
     <!-- <div id="preloader">
         <div id="ctn-preloader" class="ctn-preloader">
@@ -132,14 +133,24 @@
                     <div class="header__search--widget header__sticky--none d-none d-lg-block">
                         <form class="d-flex header__search--form" method="post">
                             {% csrf_token %}
+                            {% if categories%}
                             <div class="header__select--categories select">
+                                
                                 <select class="header__select--inner" name="product_category">
                                     <option selected value="1">All Categories</option>
                                 {% for category in categories %}
                                     <option value="{{category.category_name}}">{{category.category_name}}</option>
                                     {% endfor %}
                                 </select>
+                               
+                                
+                            
                             </div>
+                            {% else %}
+                            <div class="header__select--categories select">
+                                <a href="/add-category/" class="new__address--btn primary__btn mb-24"  type="button">Add Category</a>
+                            </div>
+                            {% endif %}
                             <div class="header__search--box">
                                 <label>
                                     <input class="header__search--input" placeholder="Search product here..." type="text" name="search_product">

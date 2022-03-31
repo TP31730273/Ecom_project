@@ -1,6 +1,7 @@
 {% extends 'app/base.html' %}
 {% load static %}
 {% block content %}
+
     <main class="main__content_wrapper">
 
         <!-- Start breadcrumb section -->
@@ -35,8 +36,12 @@
                                 
                                 <h3 class="account__content--title mb-20">Edit-product</h3>
                                 <div class="account__login--inner">
-                                    <input class="account__login--input" placeholder="Product-name" type="text"  value="{{product.product_name}}" name="product_name" id="product_name" required>
+                                    <b><label for="product_name">Product-Name:</label></b>
+                                    
+                                    <input class="account__login--input tooltip" placeholder="Product-name" type="text"  value="{{product.product_name}}" name="product_name" id="product_name" required>
+                                    <b><label for="product_description">Product-Description:</label></b>
                                     <textarea class="account__login--input" placeholder="Product-description"  name="product_description" id="product_description" required>{{product.product_description}}</textarea>
+                                    <b><label for="product_price">Product-Price:</label></b>
                                     <input class="account__login--input" placeholder="Product-price" type="number" value="{{product.product_price}}" name="product_price" id="product_price">
                                     <div id="product_image"  style="margin-bottom: 30px;">
                                         
@@ -120,7 +125,9 @@
     //                 }
     //             })  
     // });
-
+    $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
     $('#Add-product-btn').on('click',function (event) {
         $('#error-msg').empty();    
         var product_price=$('#product_price').val();
