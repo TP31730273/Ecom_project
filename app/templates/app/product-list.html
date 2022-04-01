@@ -41,8 +41,8 @@
         <!-- End breadcrumb section -->
         {% if categories %}
         <div class="container header__bottom--inner position__relative d-none d-lg-flex justify-content-between align-items-center" style="display: flex !important;">
-            <div style="display: flex !important;" >
-                <form action="{% url 'FilterFunction' %}" method="post">
+            <div style="display: flex !important;" id="filter_product" >
+                
                     {% csrf_token %}
                     {% for category in categories %}
     
@@ -51,8 +51,8 @@
                         {{category.category_name}}</div>
     
                     {% endfor %}
-                    <button type="submit" class="new__address--btn primary__btn mb-25" style="margin-left: -650px; margin-bottom: 10px; position: absolute;">Filter</button>
-                </form>
+                    <button type="submit" class="new__address--btn primary__btn mb-25" id="filter_product_btn" style=" margin-bottom: 10px; position: absolute; margin-left: -155px;">Filter</button>
+                
                 
             </div>
         </div>
@@ -64,7 +64,7 @@
             <div class="container">
                 <div class="cart__section--inner">
                    
-                        <h2 class="cart__title mb-40">Porduct List</h2>
+                        <h2 class="cart__title mb-40" id="{{data}}">Porduct List</h2>
                        
     
                         {% if product_list %}
@@ -80,7 +80,7 @@
                                         </tr>
                                     </thead>
                                     
-                                    <tbody class="cart__table--body">
+                                    <tbody class="cart__table--body filtered_product_list" >
                                         {% for Page in product_list %}
                                         <tr class="cart__table--body__items">
                                             <td class="cart__table--body__list" id="">
@@ -164,10 +164,10 @@
                                         </tr>
                                     </thead>
                                     
-                                    <tbody class="cart__table--body">
+                                    <tbody class="cart__table--body filtered_product_list">
                                         {% for Page in page_object %}
                                         <tr class="cart__table--body__items">
-                                            <td class="cart__table--body__list" id="">
+                                            <td class="cart__table--body__list" >
                                                 <div class="cart__product d-flex align-items-center">
                                                     <button type="button" class="wishlist__cart--btn primary__btn open" id="{{Page.id}}">
                                                         delete
@@ -231,7 +231,7 @@
                                         {% endfor %}    
                                     </tbody>
                                 </table> 
-                                <div class="continue__shopping d-flex justify-content-between">
+                                <div class="continue__shopping d-flex justify-content-between paginator">
                                     <div class="pagination">
                                         <span>
                                             {% if page_object.has_previous %}
@@ -954,7 +954,7 @@
                         </div>
                         <div class="shipping__items2--content">
                             <h2 class="shipping__items2--content__title h3">Shipping</h2>
-                            <p class="shipping__items2--content__desc">From handpicked sellers</p>
+                            <p  class="shipping__items2--content__desc">From handpicked sellers</p>
                         </div>
                     </div>
                 </div>
@@ -966,18 +966,114 @@
 <!-- pop-up -->
 
 <script>
+    var arr=[];
     function GetInputVal(item) {
         var point=document.getElementById(`${item}`).checked;
 
         if (point === true) {
             $('.category_list').find(`#${item}`).attr('name',item);
             $('.category_list').find(`#${item}`).attr('value',item);
+            arr.push(item);
         }else{
             $('.category_list').find(`#${item}`).removeAttr('name');
             $('.category_list').find(`#${item}`).removeAttr('value');
+            arr.pop();
         }
     }
-    $(document).ready(function (){
+
+$('#filter_product_btn').on('click',function (event) {
+   
+    var cat_list = arr; 
+    var csrf_token = $(this).parent().find("[name='csrfmiddlewaretoken']").val();
+    $.ajax({
+                url: '/filtered-products/',
+                type: 'POST',
+                data: {
+                  csrfmiddlewaretoken: csrf_token,
+                  cat_list: cat_list,
+              },
+              
+                success: function (response) {
+                    console.log(response);
+                    if (response['err'] === 'err') {
+                        $('.filtered_product_list').html(`<p>No product </p>`)
+                        $('.pagination').empty();
+                    }else{
+                        $('.filtered_product_list').empty();
+                        var data=JSON.parse(response);
+                        for (const key in data) {
+                        let val = data[key].fields;
+                            $('.filtered_product_list').prepend(` <tr class="cart__table--body__items">
+                                            <td class="cart__table--body__list" id="">
+                                                <div class="cart__product d-flex align-items-center">
+                                                    <button type="button" class="wishlist__cart--btn primary__btn open" onclick="showModel()" id="${data[key].pk}">
+                                                        delete
+                                                      </button>
+                                                      <!-- delete-model-button -->
+                                                      <div style="display: none;" class="pop-outer">
+                                                        <div class="pop-inner">
+                                                            <button class="close" onclick="hideModel() style="margin-left: 435px; position: absolute;">X</button>
+                                                            <div class="container">
+                                                                <h>Do you want to delete this product permanently?</h>
+                                                                <form action="/delete-product/${data[key].pk}/" method="post">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="wishlist__cart--btn primary__btn open">
+                                                                        delete-permanently
+                                                                      </button>
+                                                                </form>
+                                                            </div>
+                                                            
+                                                            <div class="container" style="margin-top: 90px;">
+                                                                <h>Do you want to Inactive this product?</h>
+                                                                <form action="/inactive-product/${data[key].pk}" method="delete">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="wishlist__cart--btn primary__btn open">
+                                                                        Inactive
+                                                                      </button>
+                                                                </form>
+                                                            </div>
+                                                            
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <!-- edit-product-model -->
+
+
+                                                    <div class="cart__thumbnail">
+                                                        <a href="/product-page/${data[key].pk}"><img class="border-radius-5" src="/media/${val.product_image}" alt="product"></a>
+                                                    </div>
+                                                    <div class="cart__content">
+                                                        <h4 class="cart__content--title"><a href="/product-page/${data[key].pk}">${val.product_name}</a></h4>
+                                                        <b>Description</b> <p style="word-wrap: break-word !important;">${val.product_description}</p>
+                                                        <!-- <span class="cart__content--variant">COLOR: Blue</span>
+                                                        <span class="cart__content--variant">WEIGHT: 2 Kg</span> -->
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="cart__table--body__list">
+                                                <span class="cart__price">$${val.product_price}</span>
+                                            </td>
+                                            
+                                            <td class="cart__table--body__list text-center">
+                                                <span class="in__stock text__secondary">in stock</span>
+                                            </td>
+                                            <td class="cart__table--body__list text-center">
+    
+                                                    <span class="cart__price">${$(`#${val.product_category}`).parent().text()}</span>
+                                               
+                                            </td>
+                                            <td class="cart__table--body__list text-right">
+                                                <a  href="/edit-product/${data[key].pk}" class="wishlist__cart--btn primary__btn open1" >Edit-product</a>
+                                            </td>
+                                        </tr>`)
+                   }
+                   $('.pagination').empty();
+                    }
+                    }
+                    
+                })  
+});
+$(document).ready(function (){
                 $(".open").click(function (){
                 
                     $(".pop-outer").fadeIn("slow");
@@ -986,8 +1082,12 @@
                     $(".pop-outer").fadeOut("slow");
                 });
             });
- 
-
+function showModel() {
+    $(".pop-outer").fadeIn("slow");
+}
+function hideModel() {
+    $(".pop-outer").fadeOut("slow");
+}
 </script>
     </main>
 

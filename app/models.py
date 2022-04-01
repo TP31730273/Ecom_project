@@ -1,7 +1,4 @@
-from email.policy import default
-from operator import contains
-from tkinter import CASCADE
-from unicodedata import name
+
 from django.db import models
 from django.contrib.auth.models import User,AbstractBaseUser
 
@@ -27,7 +24,7 @@ class Sellers(AbstractBaseUser):
     image = models.ImageField(default = "default.jpg", upload_to = "media")
 
     def __str__(self):
-        return self.username
+        return self.email
 
 class Category(models.Model):
     category_name = models.CharField(unique=True,max_length=100)

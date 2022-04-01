@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.generic.base import TemplateView
+from django.views.generic.list import ListView
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import redirect
@@ -20,11 +21,11 @@ from django.urls import reverse_lazy
 import datetime
 from django.db.models import Q
 from django.core import serializers
-# Create your views here.
+
 
 class HomeView(View):
      def get(self,request):
-          return render(request,'app/index.html')
+          return render(request,'app/index.html',{"products":Product.objects.filter(is_active=True)})
 
 class MyAccountView(View):
      def get(self,request):
@@ -32,18 +33,27 @@ class MyAccountView(View):
 
 class MySellerAccountView(View):
      def get(self,request):
-          return render(request,'app/seller-account.html')
+          try:
+               if request.session['seller_email']:
+                    return render(request,'app/seller-account.html')
+          except:
+               return redirect('HomeView')
 
 class ProductListPage(View):
      def get(self,request):
-          products = Product.objects.filter(is_active=True).order_by('date_created')
-          paginator = Paginator(products, 1)
-          page_number = request.GET.get('page')
-          page_object = paginator.get_page(page_number)
-          categories=Category.objects.all().order_by("-id")
-          return render(request,'app/product-list.html',{"page_object":page_object,"categories":categories})
+          try:
+               products = Product.objects.filter(is_active=True,seller__email=request.session['seller_email']).order_by('date_created')
+               paginator = Paginator(products, 1)
+               page_number = request.GET.get('page')
+               page_object = paginator.get_page(page_number)
+               categories=Category.objects.all()
+               return render(request,'app/product-list.html',{"page_object":page_object,"categories":categories})
+          except:
+               return redirect('HomeView')
      
-
+class AllProductList(ListView):
+     model=Product
+     
 
 class ProductView(DetailView):
     model = Product
@@ -69,7 +79,6 @@ class RegisterView(View):
 
      def get(self,request):
           if 'email' in request.session:
-              
                return redirect('HomeView')
           else:
                return render(request,'app/register.html')
@@ -146,8 +155,8 @@ class SellerLoginView(View):
 class AddProductView(View):
      def get(self,request):
           try:
-               all_category=Category.objects.all()
-               return render(request,'app/add-product.html',{"all_category":all_category})
+               all_category=Category.objects.all().order_by('-id')
+               return render(request,'app/add-product.html',{"categories":all_category})
           except:
                return render(request,'app/add-product.html')
 
@@ -238,14 +247,19 @@ class DeleteCategoryView(View):
 
 
 class FilterFunction(View):
-     def post(self, request):  
+     
+     def get(self,request):
           categories=Category.objects.all().order_by("-id")
-          arr=[]     
-          for i in request.POST:
-               arr.append(i)
-          array2=list(map(int, arr[1:]))
-          product_list=Product.objects.filter(product_category__in=array2)
-          return render(request,'app/product-list.html',{'product_list':product_list,"categories":categories})
+          return render(request,'app/product-list.html',{"categories":categories})
+     def post(self, request):
+          category_list=list(map(int, request.POST.getlist('cat_list[]')))
+          if len(category_list) != 0:
+               product_list=Product.objects.filter(product_category__in=category_list,is_active=True)
+               data = serializers.serialize('json', list(product_list),fields=('product_name','product_description','product_price','product_image','product_category','pk'))
+               print(data,"**********************************^^^DDDDDDDDDDDDDDDD**************")
+               return JsonResponse(data,safe=False)
+          else:
+                return JsonResponse({"err":'err'})
 
 
 class InactiveProductList(View):
@@ -268,10 +282,10 @@ class SearchProduct(View):
           search=request.POST.get('search_product')
           
           # searched = Product.objects.filter(Q(product_name__icontains=search) | Q(content__icontains=search))
-          searched = Product.objects.filter(Q(product_name__icontains=search)).exclude(is_active=False)
+          searched = Product.objects.filter(Q(product_name__icontains=search)|Q(product_category__category_name__icontains=search)).exclude(is_active=False)
           if searched.exists():
                data = serializers.serialize('json', list(searched),fields=('product_name','product_description','product_price','product_image','product_category','pk'))
-               x_data=serializers.serialize('json', list(searched))
+               
                print(data,"**********************************^^^DDDDDDDDDDDDDDDD**************")
                     
                return JsonResponse(data,safe=False)

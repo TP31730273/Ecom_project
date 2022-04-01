@@ -133,7 +133,7 @@
                     <div class="header__search--widget header__sticky--none d-none d-lg-block">
                         <form class="d-flex header__search--form" method="post">
                             {% csrf_token %}
-                            {% if categories%}
+                           
                             <div class="header__select--categories select">
                                 
                                 <select class="header__select--inner" name="product_category">
@@ -143,14 +143,8 @@
                                     {% endfor %}
                                 </select>
                                
-                                
-                            
                             </div>
-                            {% else %}
-                            <div class="header__select--categories select">
-                                <a href="/add-category/" class="new__address--btn primary__btn mb-24"  type="button">Add Category</a>
-                            </div>
-                            {% endif %}
+                        
                             <div class="header__search--box">
                                 <label>
                                     <input class="header__search--input" placeholder="Search product here..." type="text" name="search_product">

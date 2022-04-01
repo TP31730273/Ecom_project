@@ -44,9 +44,9 @@
                                     <div id="product_image"  style="margin-bottom: 30px;">
                                         
                                         <label for="product_category">Product-Category:</label>
-                                        {% if all_category %}
+                                        {% if categories %}
                                         <select name="product_category" id="product_category">
-                                                {% for category in all_category%}
+                                                {% for category in categories%}
                                                 <option value="{{category.category_name}}">{{category.category_name}}</option>
                                                 {% endfor %}
                                             </select>
