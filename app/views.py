@@ -114,7 +114,8 @@ class UserLoginView(View):
 
      def post(self, request):
           email = request.POST.get('email')
-          password = request.POST.get('pswd') 
+         
+          password = request.POST.get('password')
           user=Customers.objects.filter(email=email)
           if user.exists():
                user=user.first()
