@@ -21,10 +21,12 @@ from django.urls import reverse_lazy
 import datetime
 from django.db.models import Q
 from django.core import serializers
+from django.contrib.contenttypes.models import ContentType
 
 
 class HomeView(View):
      def get(self,request):
+          print(type(ContentType.objects.get_for_model(Category)),"78923475892749238472389472389472394273498")
           return render(request,'app/index.html',{"products":Product.objects.filter(is_active=True)})
 
 class MyAccountView(View):
@@ -92,9 +94,11 @@ class RegisterView(View):
                try:
                     user_create=Customers(email=email,username=user_name,password=make_password(password))
                     user_create.save()
-                    return redirect('UserLoginView')
+                    print("bang***************************")
+                    return redirect('LoginView')
                except:
                     messages.warning(request, f'User {email} is already exists please take another email-id')
+                    print("boom***************************")
                     return redirect('RegisterView')
           else:
                try:
@@ -199,6 +203,8 @@ class EditProductView(View):
                 return redirect('EditProductView')
           exist_product.product_description=product_description
           exist_product.product_price=product_price
+          current_datetime = datetime.datetime.now()
+          exist_product.date_modified=current_datetime
           try:
                product_image = request.FILES['product_image']
                if product_image:

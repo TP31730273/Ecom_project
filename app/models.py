@@ -35,7 +35,7 @@ class Category(models.Model):
 class Product(models.Model):
     product_name = models.CharField(unique=True,max_length=100)
     product_description = models.TextField(blank=True, null=True)
-    product_price = models.FloatField(blank=True, null=True)
+    product_price = models.FloatField()
     product_image = models.ImageField(upload_to="images/", blank=True, null=True)
     product_category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     seller = models.ForeignKey(Sellers, on_delete=models.CASCADE, blank=True, null=True)

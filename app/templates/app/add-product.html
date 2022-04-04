@@ -36,11 +36,11 @@
                                 <h3 class="account__content--title mb-20">Create-product</h3>
                                 <div class="account__login--inner">
                                     <b><label for="product_name">Product-Name:</label></b>
-                                    <input class="account__login--input" placeholder="Product-name" type="text"  name="product_name">
+                                    <input class="account__login--input" placeholder="Product-name" type="text"  name="product_name" required>
                                     <b><label for="product_description">Product-Description:</label></b>
                                     <textarea class="account__login--input" placeholder="Product-description"  name="product_description"></textarea>
                                     <b><label for="product_price">Product-Price:</label></b>
-                                    <input class="account__login--input" placeholder="Product-price" type="number" name="product_price" id="product_price">
+                                    <input class="account__login--input" placeholder="Product-price" type="number" name="product_price" id="product_price" step="any">
                                     <div id="product_image"  style="margin-bottom: 30px;">
                                         
                                         <label for="product_category">Product-Category:</label>
@@ -128,13 +128,29 @@
     $('#Add-product-btn').on('click',function (event) {
         $('#error-msg').empty();    
         var product_price=$('#product_price').val();
+        var product_name=$('#product_name').val();  
+        var special_char=/^[A-Za-z]*$/;
         if (Math.sign(product_price) === -1) {
             event.preventDefault();
             $('#error-msg').text('Product price should not be negative')
+            return true;
         }else if (Math.sign(product_price) === 0) {
             event.preventDefault();
             $('#error-msg').text('Product price should not be zero')
+            return true;
         }else{
+            $('#error-msg').empty();
+        }
+        if(/ /.test(product_name)){
+            event.preventDefault();
+            $('#error-msg').text(`Product name should not be null`)
+            return true;
+        }else if(!(special_char.test(product_name))){
+            event.preventDefault();
+            $('#error-msg').text(`Product name should contain these caracters`);
+            return true;
+        }
+        else{
             $('#error-msg').empty();
         }
     });
