@@ -169,18 +169,25 @@ class AddProductView(View):
           current_datetime = datetime.datetime.now()
           product_name = request.POST.get('product_name')
           product_description = request.POST.get('product_description')
-          product_price = request.POST.get('product_price')
+          product_price = abs(request.POST.get('product_price'))
           product_category = request.POST.get('product_category')
-          product_image = request.FILES['product_image']
           live_seller=Sellers.objects.get(email=request.session['seller_email'])
           cat=Category.objects.get(category_name=product_category)
-          try:
-               create_product=Product(product_name=product_name,product_description=product_description,product_price=product_price,product_image=product_image,seller=live_seller,product_category=cat,date_created=current_datetime)
-               create_product.save()
-               return redirect('ProductListPage')
-          except:
+          exist_product=Product.objects.filter(product_name=product_name).exists()
+          if exist_product:
                messages.warning(request, f'product "{product_name}" is already exists')
                return redirect('AddProductView')
+          else:
+               try:
+                    print("uyuuuuuuuuuuuuuuuuuuuuuuuuuu")
+                    product_image = request.FILES['product_image']
+                    print("uyuuuuuuuuuuuuuuu1111111111111111111111111111111111111111111uuuuuuuuuuu")
+                    create_product=Product(product_name=product_name,product_description=product_description,product_price=product_price,product_image=product_image,seller=live_seller,product_category=cat,date_created=current_datetime)
+                    create_product.save()
+                    return redirect('ProductListPage')
+               except:
+                    messages.warning(request, f'product "{product_name}" is already exists')
+                    return redirect('AddProductView')
 
 class EditProductView(View):
      def get(self,request,product):

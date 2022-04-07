@@ -42,7 +42,7 @@ class Product(models.Model):
     is_active=models.BooleanField(default=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_created = models.DateTimeField(auto_now_add=True)
-
+    
     def __str__(self):
         return self.product_name
 

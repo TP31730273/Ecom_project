@@ -133,21 +133,6 @@
         var product_price=$('#product_price').val();
         var product_name=$('#product_name').val();  
         var special_char=/^[A-Za-z]*$/;
-        
-        if (Math.sign(product_price) < 0) {
-            event.preventDefault();
-            console.log('1');
-            $('#error-msg').text('Product price should not be negative')
-            return true;
-        }else if (Math.sign(product_price) === 0) {
-            event.preventDefault();
-            console.log('2');
-            $('#error-msg').text('Product price should not be zero')
-            return true;
-        }else{
-            console.log('3');
-            $('#error-msg').empty();
-        }
         if(/ /.test(product_name)){
             event.preventDefault();
             console.log('4');
@@ -163,6 +148,21 @@
             console.log('6');
             $('#error-msg').empty();
         }
+        if (Math.sign(product_price) < 0) {
+            event.preventDefault();
+            console.log('1');
+            $('#error-msg').text('Product price should not be negative')
+            return true;
+        }else if (Math.sign(product_price) === 0) {
+            event.preventDefault();
+            console.log('2');
+            $('#error-msg').text('Product price should not be zero')
+            return true;
+        }else{
+            console.log('3');
+            $('#error-msg').empty();
+        }
+
     });
 </script>
     </main>
