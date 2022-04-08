@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'widget_tweaks',
     'crispy_forms',
+    'api',
     'app.apps.AppConfig',
     'customadmin.apps.CustomadminConfig',
     'rest_framework',
