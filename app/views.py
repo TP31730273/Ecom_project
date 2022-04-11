@@ -270,7 +270,6 @@ class FilterFunction(View):
           if len(category_list) != 0:
                product_list=Product.objects.filter(product_category__in=category_list,is_active=True)
                data = serializers.serialize('json', list(product_list),fields=('product_name','product_description','product_price','product_image','product_category','pk'))
-               print(data,"**********************************^^^DDDDDDDDDDDDDDDD**************")
                return JsonResponse(data,safe=False)
           else:
                 return JsonResponse({"err":'err'})
@@ -298,10 +297,7 @@ class SearchProduct(View):
           # searched = Product.objects.filter(Q(product_name__icontains=search) | Q(content__icontains=search))
           searched = Product.objects.filter(Q(product_name__icontains=search)|Q(product_category__category_name__icontains=search)).exclude(is_active=False)
           if searched.exists():
-               data = serializers.serialize('json', list(searched),fields=('product_name','product_description','product_price','product_image','product_category','pk'))
-               
-               print(data,"**********************************^^^DDDDDDDDDDDDDDDD**************")
-                    
+               data = serializers.serialize('json', list(searched),fields=('product_name','product_description','product_price','product_image','product_category','pk'))     
                return JsonResponse(data,safe=False)
           
 

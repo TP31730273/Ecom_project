@@ -3,9 +3,18 @@ from rest_framework import serializers
 from  app.models import *
 
 class ProductSerializer(serializers.ModelSerializer):
-   class Meta:
+    class Meta:
        model=Product
        fields=['product_name','product_description','product_price','product_image','product_category','is_active','seller']
+    def validate_product_price(self,value):
+        if value <= 0:
+            raise serializers.ValidationError('product price should be greater then zero')
+        return value
+        
+    def validate_product_name(self,value):
+        if value == '' or value.isspace():
+            raise serializers.ValidationError('product NAME should not be blank or should not contain spaces')
+        return value
 
 class CategorySerializer(serializers.ModelSerializer):
    class Meta:
