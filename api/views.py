@@ -17,33 +17,6 @@ class MyPagination(PageNumberPagination):
     page_size=10
     page_query_param ='p'
     page_size_query_param='records'
- 
-# generic api views with modelmixins
-# class ProductListView(GenericAPIView,ListModelMixin,CreateModelMixin):
-#     queryset =Product.objects.all()
-#     serializer_class= ProductSerializer
-
-#     def get(self,request,*args,**kwargs):
-#         return self.list(request,*args,**kwargs)
-
-#     def post(self,request,*args,**kwargs):
-#         return self.create(request,*args,**kwargs)
-
-# class ProductVIewApi(GenericAPIView,RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin):
-#     queryset =Product.objects.all()
-#     serializer_class= ProductSerializer
-
-#     # get perticular product
-#     def get(self,request,*args,**kwargs):
-#         return self.retrieve(request,*args,**kwargs)
-
-#     # update complete details of product
-#     def put(self,request,*args,**kwargs):
-#         return self.update(request,*args,**kwargs)
-
-#     # delete a perticular product
-#     def delete(self,request,*args,**kwargs):
-#         return self.destroy(request,*args,**kwargs)
 
 # list and create new product
 class ProductListView(ListCreateAPIView):
@@ -71,15 +44,45 @@ class CategoryViewApi(RetrieveUpdateDestroyAPIView):
 
 class ProductFilterApi(ListAPIView):
     serializer_class= ProductSerializer
+    pagination_class=MyPagination
+    MyPagination.page_size=5
     def get_queryset(self):
         return Product.objects.filter(product_category__category_name__contains=self.request.GET.get('product_category'))
     
 class ProductSearchApi(ListAPIView):
     serializer_class= ProductSerializer
-
+    pagination_class=MyPagination
+    MyPagination.page_size=5
     def get_queryset(self):
         search=self.request.GET.get('search')
         return Product.objects.filter(Q(product_name__icontains=search)|Q(product_category__category_name__icontains=search))
+
+# generic api views with modelmixins
+# class ProductListView(GenericAPIView,ListModelMixin,CreateModelMixin):
+#     queryset =Product.objects.all()
+#     serializer_class= ProductSerializer
+
+#     def get(self,request,*args,**kwargs):
+#         return self.list(request,*args,**kwargs)
+
+#     def post(self,request,*args,**kwargs):
+#         return self.create(request,*args,**kwargs)
+
+# class ProductVIewApi(GenericAPIView,RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin):
+#     queryset =Product.objects.all()
+#     serializer_class= ProductSerializer
+
+#     # get perticular product
+#     def get(self,request,*args,**kwargs):
+#         return self.retrieve(request,*args,**kwargs)
+
+#     # update complete details of product
+#     def put(self,request,*args,**kwargs):
+#         return self.update(request,*args,**kwargs)
+
+#     # delete a perticular product
+#     def delete(self,request,*args,**kwargs):
+#         return self.destroy(request,*args,**kwargs)
 
 # class ProductListView(GenericAPIView,CreateModelMixin):
 #     queryset =Product.objects.all()
@@ -87,6 +90,12 @@ class ProductSearchApi(ListAPIView):
 
 #     def post(self,request,*args,**kwargs):
 #         return self.create(request,*args,**kwargs)
+
+
+
+
+###### ListApiView with custom-method
+
 # class ProductListView(ListAPIView):
 #     def get(self,request):
 #         product=Product.objects.all()
