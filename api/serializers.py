@@ -1,7 +1,10 @@
 from dataclasses import field
+from optparse import Values
 from rest_framework import serializers
 from  app.models import *
+import re
 
+# product serializer
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
        model=Product
@@ -16,10 +19,31 @@ class ProductSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('product NAME should not be blank or should not contain spaces')
         return value
 
+# category serializer
 class CategorySerializer(serializers.ModelSerializer):
    class Meta:
        model=Category
        fields=['category_name']
+
+   def validate_category_name(self,value):
+        if len(value) <= 0 or value == '':
+            raise serializers.ValidationError('Category NAME should not be blank or should not contain spaces')
+        return value
+
+class SellerSerializer(serializers.ModelSerializer):
+   class Meta:
+       model=Sellers
+       fields='__all__'
+
+   def validate_seller(self,value):
+        if value == 'False':
+            raise serializers.ValidationError('Please choose seller is true')
+        return value
+
+class CustomerSerializer(serializers.ModelSerializer):
+   class Meta:
+       model=Sellers
+       fields=['email','username','password']
 
 # class ProductSerializer(serializers.Serializer):
 #     product_name = serializers.CharField(max_length=100)

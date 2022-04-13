@@ -1,33 +1,63 @@
 from django.contrib import admin
 
-from .models import Customers, Sellers, Category, Product
+from .models import UserAccount, Customers, Sellers, Category, Product
+
+
+@admin.register(UserAccount)
+class UserAccountAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'password',
+        'last_login',
+        'is_superuser',
+        'email',
+        'username',
+        'image',
+        'is_staff',
+        'is_active',
+    )
+    list_filter = ('last_login', 'is_superuser', 'is_staff', 'is_active')
+    raw_id_fields = ('groups', 'user_permissions')
 
 
 @admin.register(Customers)
 class CustomersAdmin(admin.ModelAdmin):
     list_display = (
         'id',
+        'password',
         'last_login',
+        'is_superuser',
         'email',
         'username',
-        'password',
         'image',
+        'is_staff',
+        'is_active',
     )
-    list_filter = ('last_login',)
+    list_filter = ('last_login', 'is_superuser', 'is_staff', 'is_active')
 
 
 @admin.register(Sellers)
 class SellersAdmin(admin.ModelAdmin):
     list_display = (
         'id',
+        'password',
         'last_login',
+        'is_superuser',
         'email',
         'username',
-        'password',
-        'shop_name',
         'image',
+        'is_staff',
+        'is_active',
+        'shop_name',
+        'is_seller',
     )
-    list_filter = ('last_login',)
+    list_filter = (
+        'last_login',
+        'is_superuser',
+        'is_staff',
+        'is_active',
+        'is_seller',
+    )
 
 
 @admin.register(Category)

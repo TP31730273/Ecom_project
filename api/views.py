@@ -1,17 +1,19 @@
-from unicodedata import category
-from django.shortcuts import render
-from django.http import HttpResponse,JsonResponse
-from rest_framework.parsers import JSONParser
-from rest_framework.response import Response 
-from rest_framework.renderers import JSONRenderer 
+# from unicodedata import category
+# from django.shortcuts import render
+# from django.http import HttpResponse,JsonResponse
+# from rest_framework.parsers import JSONParser
+# from rest_framework.response import Response 
+# from rest_framework.renderers import JSONRenderer 
 from rest_framework.generics import ListAPIView,GenericAPIView,ListCreateAPIView,RetrieveUpdateAPIView,DestroyAPIView,RetrieveUpdateDestroyAPIView
-from rest_framework.mixins import ListModelMixin,CreateModelMixin,UpdateModelMixin,DestroyModelMixin,RetrieveModelMixin
+# from rest_framework.mixins import ListModelMixin,CreateModelMixin,UpdateModelMixin,DestroyModelMixin,RetrieveModelMixin
 from  app.models import Product
 from .serializers import *
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework import viewsets
+# from django.views.decorators.csrf import csrf_exempt
+# from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 class MyPagination(PageNumberPagination):
     page_size=10
@@ -20,10 +22,12 @@ class MyPagination(PageNumberPagination):
 
 # list and create new product
 class ProductListView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset =Product.objects.all()
     serializer_class= ProductSerializer
     pagination_class=MyPagination
-    MyPagination.page_size=1
+    MyPagination.page_size=3
 
 # delete,retrive and update
 class ProductVIewApi(RetrieveUpdateDestroyAPIView):
@@ -32,6 +36,8 @@ class ProductVIewApi(RetrieveUpdateDestroyAPIView):
 
 # listing and creating category
 class CategoryListView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset =Category.objects.all()
     serializer_class= CategorySerializer
     pagination_class=MyPagination
@@ -39,10 +45,14 @@ class CategoryListView(ListCreateAPIView):
 
 # delete update and retriveing 
 class CategoryViewApi(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset =Product.objects.all()
     serializer_class= ProductSerializer
 
 class ProductFilterApi(ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class= ProductSerializer
     pagination_class=MyPagination
     MyPagination.page_size=5
@@ -50,12 +60,26 @@ class ProductFilterApi(ListAPIView):
         return Product.objects.filter(product_category__category_name__contains=self.request.GET.get('product_category'))
     
 class ProductSearchApi(ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class= ProductSerializer
     pagination_class=MyPagination
     MyPagination.page_size=5
     def get_queryset(self):
         search=self.request.GET.get('search')
         return Product.objects.filter(Q(product_name__icontains=search)|Q(product_category__category_name__icontains=search))
+
+class SellerListView(ListCreateAPIView):
+    queryset =Sellers.objects.all()
+    serializer_class= SellerSerializer
+    pagination_class=MyPagination
+    MyPagination.page_size=3
+
+class CustomerListView(ListCreateAPIView):
+    queryset =Customers.objects.all()
+    serializer_class= CustomerSerializer
+    pagination_class=MyPagination
+    MyPagination.page_size=3
 
 # generic api views with modelmixins
 # class ProductListView(GenericAPIView,ListModelMixin,CreateModelMixin):

@@ -40,11 +40,13 @@ INSTALLED_APPS = [
     'django_extensions',
     'widget_tweaks',
     'crispy_forms',
-    'api',
+    'api.apps.ApiConfig',
     'app.apps.AppConfig',
     'customadmin.apps.CustomadminConfig',
     'rest_framework',
+    'drf_yasg',
     'rest_framework.authtoken',
+
 ]
 
 MIDDLEWARE = [
@@ -79,6 +81,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Ecom.wsgi.application'
 
 
+
+REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -91,7 +95,7 @@ WSGI_APPLICATION = 'Ecom.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ecom_db', 
+        'NAME': 'DB_ECOM', 
         'USER': 'postgres', 
         'PASSWORD': 'root',
         'HOST': 'localhost', 
@@ -121,7 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'app.UserAccount'
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -133,6 +137,22 @@ USE_I18N = True
 
 USE_TZ = True
 
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Basic': {
+            'type': 'basic'
+      },
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   },
+   "USE_SESSION_AUTH":False,
+   "is_authenticated":False,
+   "is_superuser":False,
+   'unauthenticated_user':'django.contrib.auth.models.AnonymousUser',
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -146,8 +166,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_ROOT = path.join(BASE_DIR, 'media').replace('\\', '/')
-LOGIN_URL = "auth_keyword:auth_login"
-LOGOUT_REDIRECT_URL = "auth_keywordz:auth_login"
+# LOGIN_URL = "auth_keyword:auth_login"
+# LOGOUT_REDIRECT_URL = "auth_keywordz:auth_login"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 STATIC_URL = '/static/'
