@@ -23,14 +23,14 @@ class SuccessMessageMixin(object):
             messages.success(self.request, success_message)
         return response
 
-    # def forms_valid(self, forms):
-    #     """Ensure it works with multi_form_view.MultiModelFormView."""
-    #     print("SuccessMessageMixin:forms_valid")
-    #     response = super().forms_valid(forms)
-    #     success_message = self.get_success_message()
-    #     if not self.request.is_ajax() and success_message:
-    #         messages.success(self.request, success_message)
-    #     return response
+    def forms_valid(self, forms):
+        """Ensure it works with multi_form_view.MultiModelFormView."""
+        print("SuccessMessageMixin:forms_valid")
+        response = super().forms_valid(forms)
+        success_message = self.get_success_message()
+        if not self.request.is_ajax() and success_message:
+            messages.success(self.request, success_message)
+        return response
 
 
 class ModelOptsMixin(object):
@@ -38,6 +38,7 @@ class ModelOptsMixin(object):
 
     def get_context_data(self, **kwargs):
         """Returns the context data to use in this view."""
+        
         ctx = super().get_context_data(**kwargs)
         if hasattr(self, "model"):
             ctx["opts"] = self.model._meta

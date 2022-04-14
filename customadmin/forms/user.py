@@ -1,114 +1,93 @@
-# # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-# from django import forms
+from django import forms
 
-# from ..models import User
-
-
-# # -----------------------------------------------------------------------------
-# # User
-# # -----------------------------------------------------------------------------
-
-# class UserCreationForm(forms.ModelForm):
-#     """Custom User"""
-
-#     class Meta():
-#         model = User
-#         fields = [
-#             "email",
-#             "password",
-#             "first_name",
-#             "last_name",
-#             "username",
-#             "profile_image",
-#             "phone",
-#             "address",
-#             "date_of_birth",
-#             "language",
-#         ]
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-
-#     def clean(self):
-#         cleaned_data = super(UserCreationForm, self).clean()
-#         email = cleaned_data.get("email")
-#         password = cleaned_data.get("password")
-#         last_name = cleaned_data.get("last_name")
-#         first_name = cleaned_data.get("first_name")
-
-#         if not email :
-#             raise forms.ValidationError(
-#                 "Please add email."
-#             )
-#         if not password :
-#             raise forms.ValidationError(
-#                 "Please add Password."
-#             )
-#         if not last_name :
-#             raise forms.ValidationError(
-#                 "Please add last name."
-#             )
-#         if not first_name :
-#             raise forms.ValidationError(
-#                 "Please add first name."
-#             )
-#     def save(self, commit=True):
-#         instance = super().save(commit=False)
-
-#         if commit:
-#             instance.save()
-
-#         return instance
+from app.models import UserAccount
 
 
-# class UserChangeForm(forms.ModelForm):
-#     """Custom form to change User"""
+# -----------------------------------------------------------------------------
+# User
+# -----------------------------------------------------------------------------
 
-#     class Meta():
-#         model = User
+class UserCreationForm(forms.ModelForm):
+    """Custom User"""
 
-#         fields = [
-#             "email",
-#             "password",
-#             "first_name",
-#             "last_name",
-#             "username",
-#             "profile_image",
-#             "phone",
-#             "address",
-#             "date_of_birth",
-#             "language",
-#         ]
+    class Meta():
+        model = UserAccount
+        fields = [
+            "email",
+            "password",
+            "username",
+            "image",
+           
+            
+        ]
 
-#     def clean(self):
-#         cleaned_data = super(ServiceChangeForm,self).clean()
-#         email = cleaned_data.get("email")
-#         password = cleaned_data.get("password")
-#         last_name = cleaned_data.get("last_name")
-#         first_name = cleaned_data.get("first_name")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-#         if not email :
-#             raise forms.ValidationError(
-#                 "Please add email."
-#             )
-#         if not password :
-#             raise forms.ValidationError(
-#                 "Please add Password."
-#             )
-#         if not last_name :
-#             raise forms.ValidationError(
-#                 "Please add last name."
-#             )
-#         if not first_name :
-#             raise forms.ValidationError(
-#                 "Please add first name."
-#             )
+    def clean(self):
+        cleaned_data = super(UserCreationForm, self).clean()
+        email = cleaned_data.get("email")
+        password = cleaned_data.get("password")
+        username = cleaned_data.get("username")
 
-#     def save(self, commit=True):
-#         instance = super().save(commit=False)
+        if not email :
+            raise forms.ValidationError(
+                "Please add email."
+            )
+        if not username :
+            raise forms.ValidationError(
+                "Please add email."
+            )
+        if not password :
+            raise forms.ValidationError(
+                "Please add Password."
+            )
 
-#         if commit:
-#             instance.save()
+    def save(self, commit=True):
+        instance = super().save(commit=False)
 
-#         return instance
+        if commit:
+            instance.save()
+
+        return instance
+
+
+class UserChangeForm(forms.ModelForm):
+    """Custom form to change User"""
+
+    class Meta():
+        model = UserAccount
+
+        fields = [
+            "email",
+            "password",
+            "username",
+            "image",
+           
+        ]
+
+    def clean(self):
+        cleaned_data = super(UserChangeForm,self).clean()
+        email = cleaned_data.get("email")
+        password = cleaned_data.get("password")
+        username = cleaned_data.get("username")
+        
+
+        if not email :
+            raise forms.ValidationError(
+                "Please add email."
+            )
+        if not password :
+            raise forms.ValidationError(
+                "Please add Password."
+            )
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        if commit:
+            instance.save()
+
+        return instance

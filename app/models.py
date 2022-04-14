@@ -47,12 +47,23 @@ class UserAccount(AbstractBaseUser,PermissionsMixin):
     USERNAME_FIELD = "email"
     objects = AccountManager()
 
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "Users"
+        ordering = ["-id"]
+
 class Customers(UserAccount):
     class Meta:
         db_table = 'Customer'
 
     def __str__(self):
         return self.email
+    
+    class Meta:
+        verbose_name = "Customer"
+        verbose_name_plural = "Customers"
+        ordering = ["-id"]
+    
 
 class Sellers(UserAccount):
     class Meta:

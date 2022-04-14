@@ -41,16 +41,16 @@ def as_json(obj):
 
 @register.filter
 def admin_urlname(value, arg):
-    print('******************************',value)
+    
     pattern = "%s:%s-%s" % (value.app_label, value.model_name, arg)
-    if value.model_name == 'user':
-        pattern = "%s:%s-%s" % ('customadmin', 'user', arg)
+    if value.model_name == 'useraccount':
+        pattern = "%s:%s-%s" % ('customadmin', 'useraccount', arg)
     if value.model_name == 'usercard':
         pattern = "%s:%s-%s" % ('customadmin', 'usercard', arg)
-    if value.model_name == 'creator':
-        pattern = "%s:%s-%s" % ('customadmin', 'creator', arg)
-    if value.model_name == 'creatorclass':
-        pattern = "%s:%s-%s" % ('customadmin', 'creatorclass', arg)
+    if value.model_name == 'customers':
+        pattern = "%s:%s-%s" % ('customadmin', 'customers', arg)
+    if value.model_name == 'sellers':
+        pattern = "%s:%s-%s" % ('customadmin', 'sellers', arg)
     if value.model_name == 'stream':
         pattern = "%s:%s-%s" % ('customadmin', 'stream', arg)
     if value.model_name == 'creatorreview':

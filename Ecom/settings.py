@@ -166,8 +166,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_ROOT = path.join(BASE_DIR, 'media').replace('\\', '/')
-# LOGIN_URL = "auth_keyword:auth_login"
-# LOGOUT_REDIRECT_URL = "auth_keywordz:auth_login"
+LOGIN_URL = "auth_keyword:auth_login"
+LOGOUT_REDIRECT_URL = "auth_keyword:auth_login"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 STATIC_URL = '/static/'

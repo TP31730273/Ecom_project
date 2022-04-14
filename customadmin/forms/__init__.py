@@ -12,7 +12,7 @@
 # from .number_code import NumberCodeCreationForm, NumberCodeChangeForm
 # from .product import ShopProductChangeForm, ShopProductCreationForm
 # from .service import ServiceChangeForm, ServiceCreationForm
-# from .user import UserCreationForm, UserChangeForm
+from .user import UserCreationForm, UserChangeForm
 # from .purchased_product import PurchasedProductCreationForm, PurchasedProductChangeForm
 # from .service_booking import BookedServiceChangeForm, BookedServiceCreationForm
 # from .time_slots import TimeSlotChangeForm, TimeSlotCreationForm

@@ -25,6 +25,9 @@
                     <div class="col-sm-6">
                         {{ form.username|as_crispy_field }}
                     </div>
+                    <div class="col-sm-6">
+                        {{ form.password|as_crispy_field }}
+                    </div>
                 </div>
 
             </div>
@@ -38,22 +41,10 @@
             {% include "customadmin/partials/ibox_title.html" with ibox_title="Personal Info" icon_class="fas fa-user" only %}
 
             <div class="ibox-content">
-
+               
                 <div class="row">
                     <div class="col-sm-6">
-                        {{ form.first_name|as_crispy_field }}
-                    </div>
-                    <div class="col-sm-6">
-                        {{ form.last_name|as_crispy_field }}
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-sm-6">
-                        {{ form.profile_image|as_crispy_field }}
-                    </div>
-                    <div class="col-sm-6">
-                        {{ form.description|as_crispy_field }}
+                        {{ form.image|as_crispy_field }}
                     </div>
                 </div>
                
