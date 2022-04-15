@@ -15,7 +15,7 @@ from django.template.loader import get_template
 from django.views.generic import TemplateView, DetailView
 from django_datatables_too.mixins import DataTableMixin
 
-from ..forms import UserChangeForm, UserCreationForm
+from ..forms import SellerCreationForm
 from django.shortcuts import reverse, render
 
 # from customadmin.models import User, PurchasedProduct, BookedService
@@ -137,22 +137,22 @@ class SellerListView(MyListView):
 #             )
 #         return data
 
-# class UserCreateView(MyCreateView):
-#     """View to create User"""
+class SellerCreateView(MyCreateView):
+    """View to create Seller"""
 
-#     model = UserAccount
-#     form_class = UserCreationForm
-#     template_name = "customadmin/adminuser/user_form.html"
-#     permission_required = ("customadmin.add_user",)
+    model = Sellers
+    form_class = SellerCreationForm
+    template_name = "customadmin/adminuser/seller_form.html"
+    permission_required = ("customadmin.add_seller",)
 
-#     def get_form_kwargs(self):
-#         kwargs = super().get_form_kwargs()
-#         # kwargs["user"] = self.request.user
-#         return kwargs
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # kwargs["user"] = self.request.user
+        return kwargs
 
-#     def get_success_url(self):
-#         # opts = self.model._meta
-#         return reverse("customadmin:useraccount-list")
+    def get_success_url(self):
+        # opts = self.model._meta
+        return reverse("customadmin:useraccount-list")
     
 
 # class UserUpdateView(MyUpdateView):
