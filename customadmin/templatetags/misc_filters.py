@@ -48,13 +48,13 @@ def admin_urlname(value, arg):
     if value.model_name == 'usercard':
         pattern = "%s:%s-%s" % ('customadmin', 'usercard', arg)
     if value.model_name == 'customers':
-        pattern = "%s:%s-%s" % ('customadmin', 'customers', arg)
+        pattern = "%s:%s-%s" % ('customadmin_customer', 'customers', arg)
     if value.model_name == 'sellers':
         pattern = "%s:%s-%s" % ('customadmin', 'sellers', arg)
-    if value.model_name == 'stream':
-        pattern = "%s:%s-%s" % ('customadmin', 'stream', arg)
-    if value.model_name == 'creatorreview':
-        pattern = "%s:%s-%s" % ('customadmin', 'creatorreview', arg)
+    if value.model_name == 'category':
+        pattern = "%s:%s-%s" % ('customadmin_category', 'category', arg)
+    if value.model_name == 'product':
+        pattern = "%s:%s-%s" % ('customadmin_product', 'product', arg)
     if value.model_name == 'classreview':
         pattern = "%s:%s-%s" % ('customadmin', 'classreview', arg)
     if value.model_name == 'materialcategory':

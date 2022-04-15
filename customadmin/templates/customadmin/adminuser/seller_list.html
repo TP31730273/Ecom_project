@@ -10,7 +10,7 @@
 
 
 
-    {% include "customadmin/includes/list_header_card.html" with title="Create a new user" subtitle="Create a new user and assign with individual or group permissions." show_button=True %}
+    {% include "customadmin/includes/seller_list_header_card.html" with title="Create a new user" subtitle="Create a new user and assign with individual or group permissions." show_button=True %}
 
     <div class="ibox float-e-margins">
         {% comment %} <div class="ibox-title">
@@ -49,7 +49,16 @@
                             {% endif %}
                             <td>{% show_check o.is_active %}</td>
                             <td class="row-actions">
-                                {% include "customadmin/partials/list_row_more_actions.html" %}
+                                {% load misc_filters %}
+
+<a href="#" class="btn btn-info btn-xs"><i class="fas fa-eye"></i></a>
+{% if has_view_permission or has_change_permission or has_delete_permission %}
+<a href="#" title="Edit" class="btn btn-primary btn-xs"><i class="fas fa-pencil-alt"></i></a>
+{% endif %}
+
+{% if has_delete_permission %}
+    <a data-title="{{ o }}" title="Delete" href="#" class="btn btn-danger btn-xs btn-delete"><i class="fas fa-trash-alt"></i></a>
+{% endif %}
                             </td>
                             
                         </tr>
@@ -69,7 +78,7 @@
 <script src="{% static 'customadmin/js/userroles.js' %}"></script>
 
 <script>
-    var pagination_url = "{% url opts|admin_urlname:'list-ajax' %}";
+    var pagination_url = "";
     $(function () {
         userroles.user.index();
         console.log("hjsdhfjkdjksksdf");

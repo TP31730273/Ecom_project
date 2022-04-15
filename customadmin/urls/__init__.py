@@ -10,4 +10,7 @@ urlpatterns = [
     path("", include(urls_auth)),
     path("", include(urls_core)),
     path("", include(customer_url)),
+    path("", include(seller_url)),
+    path("", include(category_url)),
+    path("", include(product_url)),
 ]

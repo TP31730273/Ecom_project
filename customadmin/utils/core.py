@@ -10,6 +10,8 @@ from django.utils.text import capfirst
 from django.urls.exceptions import NoReverseMatch
 from django.contrib.auth.models import Group, Permission
 from django.conf import settings
+
+from app.models import UserAccount
 # from ..models import User
 # -----------------------------------------------------------------------------
 
@@ -109,6 +111,6 @@ def filter_perms():
 
 def filter_vendor():
     vendor = Group.objects.get(name="Vendor")
-    return User.objects.filter(
+    return UserAccount.objects.filter(
         groups=vendor
     )

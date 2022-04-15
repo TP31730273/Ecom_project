@@ -13,12 +13,12 @@
     {% if has_add_permission and show_button %}
 
 
-    {% if  opts.verbose_name_plural == 'Customers' %}
+    {% if  opts.verbose_name_plural == 'Category' %}
     <div class="float-right lead" style="margin-left: 10px;">      
       <a href="#" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Export CSV</a>
     </div>
 
-    {% elif  opts.verbose_name_plural == 'Customers' %}
+    {% elif  opts.verbose_name_plural == 'Category' %}
     <div class="float-right lead" style="margin-left: 10px;">      
       <a href="#" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Export CSV</a>
     </div>
@@ -72,7 +72,7 @@
      
       {% else %}
   
-      <a href="#" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New {{ opts.verbose_name|capfirst }}</a>
+      <a href="{% url opts|admin_urlname:'create' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New {{ opts.verbose_name|capfirst }}</a>
   
       {% endif %}
       

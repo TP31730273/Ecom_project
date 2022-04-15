@@ -42,7 +42,7 @@ class SellerListView(MyListView):
     ordering = ["id"]
     model = Sellers
     queryset = model.objects.exclude(is_staff=True).order_by('-id')
-    template_name = "customadmin/adminuser/user_list.html"
+    template_name = "customadmin/adminuser/seller_list.html"
     permission_required = ("customadmin.view_user",)
     
     def get_queryset(self):

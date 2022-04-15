@@ -53,9 +53,7 @@ class UserAccount(AbstractBaseUser,PermissionsMixin):
         ordering = ["-id"]
 
 class Customers(UserAccount):
-    class Meta:
-        db_table = 'Customer'
-
+    
     def __str__(self):
         return self.email
     
@@ -79,6 +77,10 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category_name
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+        ordering = ["-id"]
 
 class Product(models.Model):
     product_name = models.CharField(unique=True,max_length=100)
@@ -93,17 +95,21 @@ class Product(models.Model):
     
     def __str__(self):
         return self.product_name
+    class Meta:
+        verbose_name = "Product"
+        verbose_name_plural = "Products"
+        ordering = ["-id"]
 
 
 
 @receiver(post_save,sender=Customers)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
-        print("Customers*****************************************")
+        
         Token.objects.create(user=instance)
 
 @receiver(post_save,sender=Sellers)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
-        print("sellers*****************************************")
+       
         Token.objects.create(user=instance)

@@ -15,20 +15,20 @@ from django.template.loader import get_template
 from django.views.generic import TemplateView, DetailView
 from django_datatables_too.mixins import DataTableMixin
 
-from ..forms import UserChangeForm, UserCreationForm
+from ..forms import CustomerChangeForm,CustomerCreationForm
 from django.shortcuts import reverse, render
 
 # from customadmin.models import User, PurchasedProduct, BookedService
 from app.models import *
-# class CustomerDetailView(MyDetailView):
-#     template_name = "customadmin/adminuser/user_detail.html"
-#     context = {}
+class CustomerDetailView(MyDetailView):
+    template_name = "customadmin/adminuser/customer_detail.html"
+    context = {}
 
-#     def get(self, request, pk):
-#         self.context['user_detail'] = Customers.objects.filter(pk=pk).first()
-#         # self.context['purchased_products'] = PurchasedProduct.objects.filter(user=pk)
-#         # self.context['booked_services'] = BookedService.objects.filter(user=pk)
-#         return render(request, self.template_name, self.context)
+    def get(self, request, pk):
+        self.context['user_detail'] = Customers.objects.filter(pk=pk).first()
+        # self.context['purchased_products'] = PurchasedProduct.objects.filter(user=pk)
+        # self.context['booked_services'] = BookedService.objects.filter(user=pk)
+        return render(request, self.template_name, self.context)
 
 
 
@@ -53,8 +53,8 @@ class CustomerCreateView(MyCreateView):
     """View to create User"""
 
     model = Customers
-    form_class = UserCreationForm
-    template_name = "customadmin/adminuser/user_form.html"
+    form_class = CustomerCreationForm
+    template_name = "customadmin/adminuser/customer_form.html"
     permission_required = ("customadmin.add_user",)
 
     def get_form_kwargs(self):
@@ -64,25 +64,25 @@ class CustomerCreateView(MyCreateView):
 
     def get_success_url(self):
         # opts = self.model._meta
-        return reverse("customadmin:useraccount-list")
+        return reverse("customadmin_customer:customers-list")
     
 
-# class CustomerUpdateView(MyUpdateView):
-#     """View to update User"""
+class CustomerUpdateView(MyUpdateView):
+    """View to update User"""
 
-#     model = Customers
-#     form_class = UserChangeForm
-#     template_name = "customadmin/adminuser/user_form_update.html"
-#     permission_required = ("customadmin.change_user",)
+    model = Customers
+    form_class = CustomerChangeForm
+    template_name = "customadmin/adminuser/customer_form_update.html"
+    permission_required = ("customadmin.change_user",)
 
-#     def get_form_kwargs(self):
-#         kwargs = super().get_form_kwargs()
-#         # kwargs["user"] = self.request.user
-#         return kwargs
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # kwargs["user"] = self.request.user
+        return kwargs
 
-#     def get_success_url(self):
-#         # opts = self.model._meta
-#         return reverse("customadmin:useraccount-list")
+    def get_success_url(self):
+        # opts = self.model._meta
+        return reverse("customadmin_customer:customers-list")
 
 # class CustomerDeleteView(MyDeleteView):
 #     """View to delete User"""

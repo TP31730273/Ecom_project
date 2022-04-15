@@ -1,52 +1,50 @@
-# from customadmin.mixins import HasPermissionsMixin
-# from customadmin.views.generic import (
-#     MyCreateView,
-#     MyDeleteView,
-#     MyListView,
-#     MyDetailView,
-#     MyLoginRequiredView,
-#     MyUpdateView,
-# )
-# from django.contrib.auth.forms import AdminPasswordChangeForm
-# from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.db.models import Q
-# from django.http import HttpResponse
-# from django.template.loader import get_template
-# from django.views.generic import TemplateView, DetailView
-# from django_datatables_too.mixins import DataTableMixin
+from customadmin.mixins import HasPermissionsMixin
+from customadmin.views.generic import (
+    MyCreateView,
+    MyDeleteView,
+    MyListView,
+    MyDetailView,
+    MyLoginRequiredView,
+    MyUpdateView,
+)
+from django.contrib.auth.forms import AdminPasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.views.generic import TemplateView, DetailView
+from django_datatables_too.mixins import DataTableMixin
 
-# from ..forms import UserChangeForm, UserCreationForm
-# from django.shortcuts import reverse, render
+from ..forms import UserChangeForm, UserCreationForm,CategoryCreationForm,CategoryChangeForm
+from django.shortcuts import reverse, render
 
-# # from customadmin.models import User, PurchasedProduct, BookedService
-# from app.models import Sellers
-# class UserDetailView(MyDetailView):
+# from customadmin.models import User, PurchasedProduct, BookedService
+from app.models import Category
+# class CategoryDetailView(MyDetailView):
 #     template_name = "customadmin/adminuser/user_detail.html"
 #     context = {}
 
 #     def get(self, request, pk):
-#         self.context['user_detail'] = UserAccount.objects.filter(pk=pk).first()
+#         self.context['user_detail'] = Category.objects.filter(pk=pk).first()
 #         # self.context['purchased_products'] = PurchasedProduct.objects.filter(user=pk)
 #         # self.context['booked_services'] = BookedService.objects.filter(user=pk)
 #         return render(request, self.template_name, self.context)
 
 
 
-# # -----------------------------------------------------------------------------
-# # Users
-# # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Users
+# -----------------------------------------------------------------------------
 
-# class UserListView(MyListView):
-#     """View for User listing"""
-#     paginate_by = 25
-#     ordering = ["id"]
-#     model = UserAccount
-#     queryset = model.objects.exclude(is_staff=True).order_by('-id')
-#     template_name = "customadmin/adminuser/user_list.html"
-#     permission_required = ("customadmin.view_user",)
+class CategoryListView(MyListView):
+    """View for User listing"""
+    paginate_by = 25
+    ordering = ["id"]
+    model = Category
+    queryset = model.objects.all()
+    template_name = "customadmin/adminuser/category_list.html"
+    permission_required = ("customadmin.view_user",)
     
-#     def get_queryset(self):
-#         return self.model.objects.exclude(is_staff=True).exclude(email=self.request.user).exclude(email=None).order_by('-id')
 
 # class UserAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequiredView):
 #     """Built this before realizing there is
@@ -137,48 +135,47 @@
 #             )
 #         return data
 
-# class UserCreateView(MyCreateView):
-#     """View to create User"""
+class CategoryCreateView(MyCreateView):
+    """View to create Category"""
 
-#     model = UserAccount
-#     form_class = UserCreationForm
-#     template_name = "customadmin/adminuser/user_form.html"
-#     permission_required = ("customadmin.add_user",)
+    model = Category
+    form_class = CategoryCreationForm
+    template_name = "customadmin/adminuser/category_form.html"
+    permission_required = ("customadmin.add_category",)
 
-#     def get_form_kwargs(self):
-#         kwargs = super().get_form_kwargs()
-#         # kwargs["user"] = self.request.user
-#         return kwargs
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # kwargs["user"] = self.request.user
+        return kwargs
 
-#     def get_success_url(self):
-#         # opts = self.model._meta
-#         return reverse("customadmin:useraccount-list")
+    def get_success_url(self):
+        # opts = self.model._meta
+        return reverse("customadmin_category:category-list")
     
+class CategoryUpdateView(MyUpdateView):
+    """View to update Category"""
 
-# class UserUpdateView(MyUpdateView):
-#     """View to update User"""
+    model = Category
+    form_class = CategoryChangeForm
+    template_name = "customadmin/adminuser/category_form_update.html"
+    permission_required = ("customadmin.change_category",)
 
-#     model = UserAccount
-#     form_class = UserChangeForm
-#     template_name = "customadmin/adminuser/user_form_update.html"
-#     permission_required = ("customadmin.change_user",)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # kwargs["user"] = self.request.user
+        return kwargs
 
-#     def get_form_kwargs(self):
-#         kwargs = super().get_form_kwargs()
-#         # kwargs["user"] = self.request.user
-#         return kwargs
+    def get_success_url(self):
+        # opts = self.model._meta
+        return reverse("customadmin_category:category-list")
 
-#     def get_success_url(self):
-#         # opts = self.model._meta
-#         return reverse("customadmin:useraccount-list")
+class CategoryDeleteView(MyDeleteView):
+    """View to delete User"""
 
-# class UserDeleteView(MyDeleteView):
-#     """View to delete User"""
+    model = Category
+    template_name = "customadmin/category_confirm_delete.html"
+    permission_required = ("customadmin.delete_user",)
 
-#     model = UserAccount
-#     template_name = "customadmin/confirm_delete.html"
-#     permission_required = ("customadmin.delete_user",)
-
-#     def get_success_url(self):
-#         opts = self.model._meta
-#         return reverse("customadmin:useraccount-list")
+    def get_success_url(self):
+        opts = self.model._meta
+        return reverse("customadmin_category:category-list")

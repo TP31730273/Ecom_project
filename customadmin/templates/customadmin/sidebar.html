@@ -50,20 +50,20 @@
                     <span class="nav-label">Customers</span>
                 </a>
             </li>
-            <li {% if 'service-categories/' in request.path %}class="active" {% endif %}>
-                <a href="#">
+            <li {% if 'sellers/' in request.path %}class="active" {% endif %}>
+                <a href="{% url 'customadmin_seller:list' %}">
                     <i class="fa fa-user fa-fw fa-2x"></i>
                     <span class="nav-label">Sellers</span>
                 </a>
             </li>
-            <li {% if 'inquiry-types/' in request.path %}class="active" {% endif %}>
-                <a href="#">
+            <li {% if 'products/' in request.path %}class="active" {% endif %}>
+                <a href="{% url 'customadmin_product:product-list' %}">
                     <i class="fa fa-user fa-fw fa-2x"></i>
                     <span class="nav-label">Products</span>
                 </a>
             </li>
-            <li {% if 'inquiry/' in request.path %}class="active" {% endif %}>
-                <a href="#">
+            <li {% if 'categories/' in request.path %}class="active" {% endif %}>
+                <a href="{% url 'customadmin_category:category-list' %}">
                     <i class="fa fa-user fa-fw fa-2x"></i>
                     <span class="nav-label">Category</span>
                 </a>
