@@ -3,7 +3,7 @@ from http.client import responses
 from itertools import product
 from urllib import response
 from django import views
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.generic.base import TemplateView
@@ -22,24 +22,33 @@ import datetime
 from django.db.models import Q
 from django.core import serializers
 from django.contrib.contenttypes.models import ContentType
+from django.template.response import TemplateResponse
+from django.utils.decorators import method_decorator
+from app.middlewares import *
 
+def xyz(request):   
+     print("I AM EXCEPTIONNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
+     context={
+          "name":"rahul"
+     }
+     return TemplateResponse(request,'app/d1.html',context)
 
 class HomeView(View):
      def get(self,request):
-          print(type(ContentType.objects.get_for_model(Category)),"78923475892749238472389472389472394273498")
+          print(ContentType.objects.get_for_model(Category),"78923475892749238472389472389472394273498")
           return render(request,'app/index.html',{"products":Product.objects.filter(is_active=True)})
 
 class MyAccountView(View):
+     @method_decorator(customer_auth)
      def get(self,request):
           return render(request,'app/my-account.html')
 
 class MySellerAccountView(View):
+     @method_decorator(seller_auth)
      def get(self,request):
-          try:
-               if request.session['seller_email']:
-                    return render(request,'app/seller-account.html')
-          except:
-               return redirect('HomeView')
+          
+          return render(request,'app/seller-account.html')
+          
 
 class ProductListPage(View):
      def get(self,request):
@@ -50,8 +59,8 @@ class ProductListPage(View):
                page_object = paginator.get_page(page_number)
                categories=Category.objects.all()
                return render(request,'app/product-list.html',{"page_object":page_object,"categories":categories})
-          except:
-               return redirect('HomeView')
+          except Exception:
+                return redirect('HomeView')
      
 class AllProductList(ListView):
      model=Product
@@ -66,11 +75,10 @@ class ProductView(DetailView):
 
 class RemoveProductPage(View):
      def get(self,request,product):
-          get_product=Product.objects.filter(id=product).first()
-          if get_product:
-               get_product.is_active=False
-               get_product.save()
-               return redirect('ProductListPage')
+          if get_product := Product.objects.filter(id=product).first():
+                get_product.is_active=False
+                get_product.save()
+                return redirect('ProductListPage')
 
 class DeleteProductPage(DeleteView):
     model = Product
@@ -96,18 +104,17 @@ class RegisterView(View):
                     user_create.save()
                     print("bang***************************")
                     return redirect('LoginView')
-               except:
-                    messages.warning(request, f'User {email} is already exists please take another email-id')
-                    print("boom***************************")
-                    return redirect('RegisterView')
+               except Exception:
+                     messages.warning(request, f'User {email} is already exists please take another email-id')
+                     return redirect('RegisterView')
           else:
                try:
                     seller_create=Sellers(email=email,username=user_name,password=make_password(password))
                     seller_create.save()
                     return redirect('SellerLoginView')
-               except:
-                    messages.warning(request, f'Seller {email} is already exists please take another email-id')
-                    return redirect('RegisterView')
+               except Exception:
+                     messages.warning(request, f'Seller {email} is already exists please take another email-id')
+                     return redirect('RegisterView')
 
 class UserLoginView(View):
      def get(self,request):
@@ -118,7 +125,6 @@ class UserLoginView(View):
 
      def post(self, request):
           email = request.POST.get('email')
-         
           password = request.POST.get('password')
           user=Customers.objects.filter(email=email)
           if user.exists():
@@ -127,10 +133,10 @@ class UserLoginView(View):
                     request.session['user_email']=email
                     return redirect('HomeView')
                else:
-                    messages.warning(request, f'password is incorrect please enter right password')
+                    messages.warning(request, 'password is incorrect please enter right password')
                     return redirect('LoginView')
           else:
-               messages.warning(request, f'User doesnot exists please register it')
+               messages.warning(request, 'User doesnot exists please register it')
                return redirect('LoginView')
 
 class SellerLoginView(View):
@@ -162,8 +168,8 @@ class AddProductView(View):
           try:
                all_category=Category.objects.all().order_by('-id')
                return render(request,'app/add-product.html',{"categories":all_category})
-          except:
-               return render(request,'app/add-product.html')
+          except Exception:
+                return render(request,'app/add-product.html')
 
      def post(self, request):
           current_datetime = datetime.datetime.now()
@@ -173,8 +179,7 @@ class AddProductView(View):
           product_category = request.POST.get('product_category')
           live_seller=Sellers.objects.get(email=request.session['seller_email'])
           cat=Category.objects.get(category_name=product_category)
-          exist_product=Product.objects.filter(product_name=product_name).exists()
-          if exist_product:
+          if exist_product := Product.objects.filter(product_name=product_name).exists():
                messages.warning(request, f'product "{product_name}" is already exists')
                return redirect('AddProductView')
           else:
@@ -185,9 +190,9 @@ class AddProductView(View):
                     create_product=Product(product_name=product_name,product_description=product_description,product_price=product_price,product_image=product_image,seller=live_seller,product_category=cat,date_created=current_datetime)
                     create_product.save()
                     return redirect('ProductListPage')
-               except:
-                    messages.warning(request, f'product "{product_name}" is already exists')
-                    return redirect('AddProductView')
+               except Exception:
+                     messages.warning(request, f'product "{product_name}" is already exists')
+                     return redirect('AddProductView')
 
 class EditProductView(View):
      def get(self,request,product):
@@ -213,9 +218,9 @@ class EditProductView(View):
           current_datetime = datetime.datetime.now()
           exist_product.date_modified=current_datetime
           try:
-               product_image = request.FILES['product_image']
-               if product_image:
+               if product_image := request.FILES['product_image']:
                     exist_product.product_image=product_image
+                    
           except:
                pass
           exist_product.product_category=cat
@@ -266,13 +271,12 @@ class FilterFunction(View):
           categories=Category.objects.all().order_by("-id")
           return render(request,'app/product-list.html',{"categories":categories})
      def post(self, request):
-          category_list=list(map(int, request.POST.getlist('cat_list[]')))
-          if len(category_list) != 0:
+         if category_list := list(map(int, request.POST.getlist('cat_list[]'))):
                product_list=Product.objects.filter(product_category__in=category_list,is_active=True)
                data = serializers.serialize('json', list(product_list),fields=('product_name','product_description','product_price','product_image','product_category','pk'))
                return JsonResponse(data,safe=False)
-          else:
-                return JsonResponse({"err":'err'})
+         else:
+             return JsonResponse({"err":'err'})
 
 
 class InactiveProductList(View):
@@ -310,4 +314,5 @@ class Logout(View):
                del request.session['seller_email']
                return redirect('HomeView')
 
-       
+# def hit(request):
+#      return redirect('https://www.google.com/')

@@ -67,7 +67,7 @@
 {% endif %}
 
 {% if has_delete_permission %}
-    <a data-title="{{ o }}" title="Delete" href="#" class="btn btn-danger btn-xs btn-delete"><i class="fas fa-trash-alt"></i></a>
+    <a data-title="{{ o }}" title="Delete" href="{% url opts|admin_urlname:'delete' o.pk|admin_urlquote %}" class="btn btn-danger btn-xs btn-delete"><i class="fas fa-trash-alt"></i></a>
 {% endif %}
                             </td>
                             

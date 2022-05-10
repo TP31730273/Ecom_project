@@ -173,7 +173,7 @@ class CategoryDeleteView(MyDeleteView):
     """View to delete User"""
 
     model = Category
-    template_name = "customadmin/category_confirm_delete.html"
+    template_name = "customadmin/confirm_delete.html"
     permission_required = ("customadmin.delete_user",)
 
     def get_success_url(self):

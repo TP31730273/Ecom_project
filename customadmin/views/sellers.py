@@ -15,20 +15,20 @@ from django.template.loader import get_template
 from django.views.generic import TemplateView, DetailView
 from django_datatables_too.mixins import DataTableMixin
 
-from ..forms import SellerCreationForm
+from ..forms import SellerCreationForm,SellerChangeForm
 from django.shortcuts import reverse, render
 
 # from customadmin.models import User, PurchasedProduct, BookedService
 from app.models import Sellers
-# class UserDetailView(MyDetailView):
-#     template_name = "customadmin/adminuser/user_detail.html"
-#     context = {}
+class SellerDetailView(MyDetailView):
+    template_name = "customadmin/adminuser/seller_detail.html"
+    context = {}
 
-#     def get(self, request, pk):
-#         self.context['user_detail'] = UserAccount.objects.filter(pk=pk).first()
-#         # self.context['purchased_products'] = PurchasedProduct.objects.filter(user=pk)
-#         # self.context['booked_services'] = BookedService.objects.filter(user=pk)
-#         return render(request, self.template_name, self.context)
+    def get(self, request, pk):
+        self.context['user_detail'] = Sellers.objects.filter(pk=pk).first()
+        # self.context['purchased_products'] = PurchasedProduct.objects.filter(user=pk)
+        # self.context['booked_services'] = BookedService.objects.filter(user=pk)
+        return render(request, self.template_name, self.context)
 
 
 
@@ -152,33 +152,33 @@ class SellerCreateView(MyCreateView):
 
     def get_success_url(self):
         # opts = self.model._meta
-        return reverse("customadmin:useraccount-list")
+        return reverse("customadmin_seller:sellers-list")
     
 
-# class UserUpdateView(MyUpdateView):
-#     """View to update User"""
+class SellerUpdateView(MyUpdateView):
+    """View to update Seller"""
 
-#     model = UserAccount
-#     form_class = UserChangeForm
-#     template_name = "customadmin/adminuser/user_form_update.html"
-#     permission_required = ("customadmin.change_user",)
+    model = Sellers
+    form_class = SellerChangeForm
+    template_name = "customadmin/adminuser/seller_form_update.html"
+    permission_required = ("customadmin.change_user",)
 
-#     def get_form_kwargs(self):
-#         kwargs = super().get_form_kwargs()
-#         # kwargs["user"] = self.request.user
-#         return kwargs
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # kwargs["user"] = self.request.user
+        return kwargs
 
-#     def get_success_url(self):
-#         # opts = self.model._meta
-#         return reverse("customadmin:useraccount-list")
+    def get_success_url(self):
+        # opts = self.model._meta
+        return reverse("customadmin_seller:sellers-list")
 
-# class UserDeleteView(MyDeleteView):
-#     """View to delete User"""
+class SellerDeleteView(MyDeleteView):
+    """View to delete Seller"""
 
-#     model = UserAccount
-#     template_name = "customadmin/confirm_delete.html"
-#     permission_required = ("customadmin.delete_user",)
+    model = Sellers
+    template_name = "customadmin/confirm_delete.html"
+    permission_required = ("customadmin.delete_seller",)
 
-#     def get_success_url(self):
-#         opts = self.model._meta
-#         return reverse("customadmin:useraccount-list")
+    def get_success_url(self):
+        opts = self.model._meta
+        return reverse("customadmin_seller:sellers-list")

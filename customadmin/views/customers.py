@@ -84,13 +84,13 @@ class CustomerUpdateView(MyUpdateView):
         # opts = self.model._meta
         return reverse("customadmin_customer:customers-list")
 
-# class CustomerDeleteView(MyDeleteView):
-#     """View to delete User"""
+class CustomerDeleteView(MyDeleteView):
+    """View to delete Customer"""
 
-#     model = Customers
-#     template_name = "customadmin/confirm_delete.html"
-#     permission_required = ("customadmin.delete_user",)
+    model = Customers
+    template_name = "customadmin/confirm_delete.html"
+    permission_required = ("customadmin.delete_customer",)
 
-#     def get_success_url(self):
-#         opts = self.model._meta
-#         return reverse("customadmin:useraccount-list")
+    def get_success_url(self):
+        opts = self.model._meta
+        return reverse("customadmin_customer:customers-list")

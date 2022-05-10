@@ -51,9 +51,9 @@
                 </a>
             </li>
             <li {% if 'sellers/' in request.path %}class="active" {% endif %}>
-                <a href="{% url 'customadmin_seller:list' %}">
+                <a href="{% url 'customadmin_seller:sellers-list' %}">
                     <i class="fa fa-user fa-fw fa-2x"></i>
-                    <span class="nav-label">Sellers</span>
+                    <span class="nav-label">Seller</span>
                 </a>
             </li>
             <li {% if 'products/' in request.path %}class="active" {% endif %}>
@@ -68,12 +68,7 @@
                     <span class="nav-label">Category</span>
                 </a>
             </li>
-            <li {% if 'inquiry/' in request.path %}class="active" {% endif %}>
-                <a href="#">
-                    <i class="fa fa-user fa-fw fa-2x"></i>
-                    <span class="nav-label">Tokens</span>
-                </a>
-            </li>
+           
             
             {% endif %}
 

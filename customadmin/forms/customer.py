@@ -17,6 +17,7 @@ class CustomerCreationForm(forms.ModelForm):
         fields = [
             "email",
             "username",
+            "password",
             "image",
             "is_active",
         ]
@@ -28,6 +29,7 @@ class CustomerCreationForm(forms.ModelForm):
         cleaned_data = super(CustomerCreationForm, self).clean()
         email = cleaned_data.get("email")
         username = cleaned_data.get("username")
+        password = cleaned_data.get("password")
         image = cleaned_data.get("image")
         is_active = cleaned_data.get("is_active")
        
@@ -42,6 +44,10 @@ class CustomerCreationForm(forms.ModelForm):
         if not image :
             raise forms.ValidationError(
                 "Please add image."
+            )
+        if not password :
+            raise forms.ValidationError(
+                "Please add password."
             )
         if not is_active :
             raise forms.ValidationError(
@@ -67,6 +73,7 @@ class CustomerChangeForm(forms.ModelForm):
             "email",
             "username",
             "image",
+            "password",
             "is_active",
         
         ]
@@ -75,6 +82,7 @@ class CustomerChangeForm(forms.ModelForm):
         cleaned_data = super(CustomerChangeForm, self).clean()
         email = cleaned_data.get("email")
         username = cleaned_data.get("username")
+        password = cleaned_data.get("password")
         image = cleaned_data.get("image")
         is_active = cleaned_data.get("is_active")
        
@@ -89,6 +97,10 @@ class CustomerChangeForm(forms.ModelForm):
         if not image :
             raise forms.ValidationError(
                 "Please add image."
+            )
+        if not password :
+            raise forms.ValidationError(
+                "Please add password."
             )
         if not is_active :
             raise forms.ValidationError(

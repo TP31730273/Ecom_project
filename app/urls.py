@@ -24,4 +24,6 @@ urlpatterns = [
     path('edit-product/<int:product>/', EditProductView.as_view(),name='EditProductView'),
     path('filtered-products/', FilterFunction.as_view(),name='FilterFunction'),
     path('searched-products/', SearchProduct.as_view(),name='SearchProduct'),
+    path('hit/', xyz,name='xyz'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -22,8 +22,8 @@ class MyPagination(PageNumberPagination):
 
 # list and create new product
 class ProductListView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
     queryset =Product.objects.all()
     serializer_class= ProductSerializer
     pagination_class=MyPagination
@@ -126,7 +126,7 @@ class CustomerListView(ListCreateAPIView):
 #         serializer=ProductSerializer(product,many=True)
 #         return JsonResponse(serializer.data,safe=False)
         
-#     @csrf_exempt
+#     
 #     def post(self,request):
 #         serializer=ProductSerializer(data=request.data)
 #         if serializer.is_valid():

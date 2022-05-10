@@ -50,7 +50,7 @@ def admin_urlname(value, arg):
     if value.model_name == 'customers':
         pattern = "%s:%s-%s" % ('customadmin_customer', 'customers', arg)
     if value.model_name == 'sellers':
-        pattern = "%s:%s-%s" % ('customadmin', 'sellers', arg)
+        pattern = "%s:%s-%s" % ('customadmin_seller', 'sellers', arg)
     if value.model_name == 'category':
         pattern = "%s:%s-%s" % ('customadmin_category', 'category', arg)
     if value.model_name == 'product':

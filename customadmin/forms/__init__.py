@@ -16,7 +16,7 @@ from .user import UserCreationForm, UserChangeForm
 from .category import CategoryCreationForm,CategoryChangeForm
 from .product import ProductCreationForm,ProductChangeForm
 from .customer import CustomerCreationForm,CustomerChangeForm
-from .seller import SellerCreationForm
+from .seller import SellerCreationForm,SellerChangeForm
 
 # from .purchased_product import PurchasedProductCreationForm, PurchasedProductChangeForm
 # from .service_booking import BookedServiceChangeForm, BookedServiceCreationForm

@@ -9,6 +9,6 @@ urlpatterns = [
     path("product/create-product/", views.ProductCreateView.as_view(), name="product-create"),
     path("product/<int:pk>/detail/", views.ProductDetailView.as_view(), name="product-detailview"),
     path("product/<int:pk>/update/", views.ProductUpdateView.as_view(), name="product-update"),
-    # path("users/<int:pk>/delete/", views.UserDeleteView.as_view(), name="useraccount-delete"),
+    path("product/<int:pk>/delete/", views.ProductDeleteView.as_view(), name="product-delete"),
     # path("export_user_csv", views.export_user_csv, name="export_user_csv"),
 ]

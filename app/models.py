@@ -24,7 +24,7 @@ class AccountManager(BaseUserManager):
 
         account.set_password(password)
         account.save()
-        print("js,fjklsdjfklsjdfklsdjfklsdfjsldfjsljfljskfjsjkfjlsjfjsdlfjksdjfl*********************************************************************")
+       
         return account
 
     def create_superuser(self, email, password, **kwargs):
@@ -67,7 +67,7 @@ class Sellers(UserAccount):
     class Meta:
         db_table = 'Seller'
     shop_name=models.CharField(max_length=100,blank=True, null=True)
-    is_seller=models.BooleanField(default=False)
+    is_seller=models.BooleanField(default=True)
 
     def __str__(self):
         return self.email

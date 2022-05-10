@@ -84,14 +84,13 @@ class UserDetailView(MyDetailView):
 class UserListView(MyListView):
     """View for User listing"""
     paginate_by = 25
-    ordering = ["id"]
+    ordering = ["-id"]
     model = UserAccount
-    queryset = model.objects.exclude(is_staff=True).order_by('-id')
+    queryset = model.objects.all().order_by('-id')
     template_name = "customadmin/adminuser/user_list.html"
     permission_required = ("customadmin.view_user",)
     
-    def get_queryset(self):
-        return self.model.objects.exclude(is_staff=True).exclude(email=self.request.user).exclude(email=None).order_by('-id')
+    
 
 class UserAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequiredView):
     """Built this before realizing there is
