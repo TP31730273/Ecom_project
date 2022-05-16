@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'social_django',
     'api.apps.ApiConfig',
     'app.apps.AppConfig',
+    # 'app',
     'customadmin.apps.CustomadminConfig',
     'rest_framework',
     'drf_yasg',
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
 ]
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

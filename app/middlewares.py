@@ -13,7 +13,7 @@ class BrotherMiddleware:
         # the view (and later middleware) are called.
 
         response = self.get_response(request)
-        print(self.get_response,"kdkljfkljfkdjfkdfjkdkfdkfdj")
+        
         
 
         # Code to be executed for each request/response after
@@ -25,7 +25,7 @@ class BrotherMiddleware:
     #     return None
 
     def process_exception(self,request,exception):
-        print(exception,"949284024802498242420482942084209420")
+        
         return HttpResponse(exception)
 
     def process_template_response(self,request,response):

@@ -102,14 +102,5 @@ class Product(models.Model):
 
 
 
-@receiver(post_save,sender=Customers)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        
-        Token.objects.create(user=instance)
 
-@receiver(post_save,sender=Sellers)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-       
-        Token.objects.create(user=instance)
+

@@ -74,8 +74,12 @@
                     <div class="header__shipping">
                         <ul class="header__shipping--wrapper d-flex">
                             <li class="header__shipping--text text-white">Welcome to Netmark online Store</li>
+                            {% if request.session.seller_email %}
+                            <li class="header__shipping--text text-white d-sm-2-none"><img class="header__shipping--text__icon" src="{% static 'img/icon/email.png" alt="email-icon"> <a class="header__shipping--text__link" href="mailto:{{request.session.seller_email}}">{{request.session.seller_email}}</a></li>
+                            {% elif request.session.user_email %}
                             <li class="header__shipping--text text-white d-sm-2-none"><img class="header__shipping--text__icon" src="{% static 'img/icon/bus.png" alt="bus-icon"> Track Your Order</li>
-                            <li class="header__shipping--text text-white d-sm-2-none"><img class="header__shipping--text__icon" src="{% static 'img/icon/email.png" alt="email-icon"> <a class="header__shipping--text__link" href="mailto:demo@gmail.com">demo@gmail.com</a></li>
+                            <li class="header__shipping--text text-white d-sm-2-none"><img class="header__shipping--text__icon" src="{% static 'img/icon/email.png" alt="email-icon"> <a class="header__shipping--text__link" href="mailto:{{request.session.user_email}}">{{request.session.user_email}}</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                     <div class="language__currency d-none d-lg-block">
@@ -131,11 +135,11 @@
                         <h1 class="main__logo--title"><a class="main__logo--link" href="index.html"><img class="main__logo--img" src="{% static 'img/logo/nav-log.png' %}" alt="logo-img"></a></h1>
                     </div>
                     <div class="header__search--widget header__sticky--none d-none d-lg-block">
+                        
                         <form class="d-flex header__search--form" method="post">
                             {% csrf_token %}
                            
                             <div class="header__select--categories select">
-                                
                                 <select class="header__select--inner" name="product_category">
                                     <option selected value="1">All Categories</option>
                                 {% for category in categories %}

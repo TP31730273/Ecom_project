@@ -1,3 +1,4 @@
+from ast import Set
 from genericpath import exists
 from http.client import responses
 from itertools import product
@@ -11,6 +12,7 @@ from django.views.generic.list import ListView
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import redirect
+from requests import request
 from .models import *
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, DeleteView
@@ -25,9 +27,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from app.middlewares import *
-
+default_dictionary={}
+def default_data():
+     categories=Category.objects.all().order_by('-id')
+     default_dictionary['categories']=categories
+     default_dictionary['products']=Product.objects.filter(is_active=True)
+     return default_dictionary
 def xyz(request):   
-     print("I AM EXCEPTIONNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
+     
      context={
           "name":"rahul"
      }
@@ -35,8 +42,9 @@ def xyz(request):
 
 class HomeView(View):
      def get(self,request):
-          print(ContentType.objects.get_for_model(Category),"78923475892749238472389472389472394273498")
-          return render(request,'app/index.html',{"products":Product.objects.filter(is_active=True)})
+          
+          print(default_data(),"903503940394034    ")
+          return render(request,'app/index.html',default_data())
 
 class MyAccountView(View):
      @method_decorator(customer_auth)
@@ -65,13 +73,44 @@ class ProductListPage(View):
 class AllProductList(ListView):
      model=Product
      
-
+pro_list=[]
 class ProductView(DetailView):
     model = Product
     template_name = 'app/product-details.html'
     context_object_name = 'product_page'
     pk_url_kwarg = 'product'
+    
+    def get_context_data(self, **kwargs):
+        """Insert the single object into the context dict."""
+        context = {}
+        if self.object:
+            
+            context['object'] = self.object
+            context_object_name = self.get_context_object_name(self.object)
+            if context_object_name:
+                context[context_object_name] = self.object
+                
+                print(self.request.session['recent_product'],"88888888888888888888888888888")
+                if 'recent_product' in self.request.session:
+                    
+                    (self.request.session['recent_product'].append(self.kwargs.get(self.pk_url_kwarg)))
+                    list(set(self.request.session['recent_product']))
+                    sorted(list(set(self.request.session['recent_product'])))
+                    context['recently_visited_products']=Product.objects.filter(id__in=list(set(self.request.session['recent_product'])))
+                    
+                else:
+                     pass
+                
+                
+              
+                
+               #  if not self.request.session['recent_product']:
+               #       self.request.session['recent_product']=[self.kwargs.get(self.pk_url_kwarg)]
+               #  else:
+               #       pass
 
+        context.update(kwargs)
+        return super().get_context_data(**context)
 
 class RemoveProductPage(View):
      def get(self,request,product):
@@ -102,7 +141,7 @@ class RegisterView(View):
                try:
                     user_create=Customers(email=email,username=user_name,password=make_password(password))
                     user_create.save()
-                    print("bang***************************")
+                    
                     return redirect('LoginView')
                except Exception:
                      messages.warning(request, f'User {email} is already exists please take another email-id')
@@ -129,8 +168,10 @@ class UserLoginView(View):
           user=Customers.objects.filter(email=email)
           if user.exists():
                user=user.first()
+               print(user.password,"88888888888888888888888888888888888888")
                if check_password(password,user.password):
                     request.session['user_email']=email
+                    request.session['recent_product']=[]
                     return redirect('HomeView')
                else:
                     messages.warning(request, 'password is incorrect please enter right password')
@@ -150,10 +191,10 @@ class SellerLoginView(View):
           password = request.POST.get('password') 
           seller=Sellers.objects.filter(email=email)
           if seller.exists():
-               print("********************************1111******************************************************************")
+               
                seller=seller.first()
                if check_password(password,seller.password):
-                    print("******************************222********************************************************************")
+                    
                     request.session['seller_email']=email
                     return redirect('MySellerAccountView')
                else:
@@ -309,9 +350,17 @@ class Logout(View):
      def get(self, request):
           if 'user_email' in request.session:
                del request.session['user_email']
+               try:
+                    del request.session['recent_product']
+               except:
+                    pass
                return redirect('HomeView')
           if 'seller_email' in request.session:
                del request.session['seller_email']
+               try:
+                    del request.session['recent_product']
+               except:
+                    pass
                return redirect('HomeView')
 
 # def hit(request):
