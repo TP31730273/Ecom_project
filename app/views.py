@@ -42,8 +42,6 @@ def xyz(request):
 
 class HomeView(View):
      def get(self,request):
-          
-          print(default_data(),"903503940394034    ")
           return render(request,'app/index.html',default_data())
 
 class MyAccountView(View):
@@ -90,24 +88,14 @@ class ProductView(DetailView):
             if context_object_name:
                 context[context_object_name] = self.object
                 
-                print(self.request.session['recent_product'],"88888888888888888888888888888")
                 if 'recent_product' in self.request.session:
                     
-                    (self.request.session['recent_product'].append(self.kwargs.get(self.pk_url_kwarg)))
-                    list(set(self.request.session['recent_product']))
+                    self.request.session['recent_product'].append(self.kwargs.get(self.pk_url_kwarg))
                     sorted(list(set(self.request.session['recent_product'])))
                     context['recently_visited_products']=Product.objects.filter(id__in=list(set(self.request.session['recent_product'])))
-                    
                 else:
                      pass
-                
-                
-              
-                
-               #  if not self.request.session['recent_product']:
-               #       self.request.session['recent_product']=[self.kwargs.get(self.pk_url_kwarg)]
-               #  else:
-               #       pass
+               
 
         context.update(kwargs)
         return super().get_context_data(**context)
